@@ -25,7 +25,7 @@ jobs:
 
     - name: Lint
       run: |
-        selene ./modules
+        selene ./src
 
   style:
     name: Styling
@@ -35,4 +35,4 @@ jobs:
     - uses: JohnnyMorganz/stylua-action@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        args: --check ./modules
+        args: --check ./src
