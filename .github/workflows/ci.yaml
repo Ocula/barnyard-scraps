@@ -20,7 +20,7 @@ jobs:
     - uses: LPGhatguy/aftman@v0.2.7
       name: Install Aftman
       with:
-          version: "^1.0.0"
+          version: "^0.2.7"
           token: ${{ SECRETS.GITHUB_TOKEN }}
 
     - name: Lint
