@@ -17,11 +17,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - uses: LPGhatguy/aftman@v0.2.7
-      name: Install Aftman
-      with:
-          version: "^0.2.7"
-          token: ${{ SECRETS.GITHUB_TOKEN }}
+ #   - uses: LPGhatguy/aftman@v0.2.7
+ #     name: Install Aftman
+ #     with:
+ #         version: "^0.2.7"
+ #         token: ${{ SECRETS.GITHUB_TOKEN }}
 
     - name: Lint
       run: |
@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: JohnnyMorganz/stylua-action@v0.14.2
+    - uses: JohnnyMorganz/stylua-action@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         args: --check ./src
