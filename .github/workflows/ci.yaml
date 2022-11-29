@@ -30,10 +30,9 @@ jobs:
   style:
     name: Styling
     runs-on: ubuntu-latest
-    
     steps:
-      - uses: actions/checkout@v2
-      - uses: JohnnyMorganz/stylua-action@v1
+    - uses: actions/checkout@v2
+    - uses: JohnnyMorganz/stylua-action@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         version: v1.1.2 # NOTE: we recommend pinning to a specific version in case of formatting changes
