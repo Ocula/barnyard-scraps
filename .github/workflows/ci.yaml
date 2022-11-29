@@ -20,7 +20,7 @@ jobs:
     - uses: ok-nick/setup-aftman@v0.3.0
       name: Install Aftman
       with:
-          version: "v0.2.7"
+          version: "v^0.0.0"
           token: ${{ SECRETS.GITHUB_TOKEN }}
 
     - name: Lint
@@ -31,8 +31,10 @@ jobs:
     name: Styling
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: JohnnyMorganz/stylua-action@v1
+      - uses: actions/checkout@v2
+      - uses: JohnnyMorganz/stylua-action@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        args: --check ./src
+        version: v1.1.2 # NOTE: we recommend pinning to a specific version in case of formatting changes
+        # CLI arguments
+        args: --check .
