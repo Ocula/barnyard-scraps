@@ -1,3 +1,15 @@
-print("Hello world, from server a!")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Knit = require(ReplicatedStorage.Packages.Knit)
 
-workspace:WaitForChild("Baseplate").Color = Color3.new(0.549019, 1, 0)
+local main = Knit.CreateService({
+	Name = "main",
+	Client = {},
+})
+
+function main:KnitStart()
+	workspace:WaitForChild("Baseplate").Color = Color3.new(0, 0.501960, 1)
+end
+
+function main:KnitInit() end
+
+return main
