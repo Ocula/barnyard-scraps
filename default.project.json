@@ -1,11 +1,15 @@
 {
-  "name": "Template",
+  "name": "barnyard-scraps",
   "tree": {
     "$className": "DataModel",
 
     "ReplicatedStorage": {
       "Common": {
         "$path": "src/shared"
+      },
+
+      "Packages": {
+        "$path": "Packages"
       }
     },
 
