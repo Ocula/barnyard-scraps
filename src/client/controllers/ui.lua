@@ -3,9 +3,7 @@ local Knit = require(ReplicatedStorage.Packages.Knit)
 
 local ui = Knit.CreateController({ Name = "ui" })
 
-function ui:KnitStart()
-	print("user interface start")
-end
+function ui:KnitStart() end
 
 function ui:KnitInit() end
 
