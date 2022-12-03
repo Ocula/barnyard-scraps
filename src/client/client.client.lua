@@ -1,5 +1,5 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Knit = require(ReplicatedStorage.Packages:WaitForChild("knit"))
+local Knit = require(ReplicatedStorage.Packages:WaitForChild("Knit"))
 
 local controllers, dependencies = script.Parent:WaitForChild("controllers"), script.Parent:WaitForChild("dependencies")
 
