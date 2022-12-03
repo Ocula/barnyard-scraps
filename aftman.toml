@@ -6,5 +6,5 @@
 rojo = "rojo-rbx/rojo@7.2.1"
 selene = "Kampfkarren/selene@0.22.0"
 stylua = "johnnymorganz/stylua@0.14.2"
-rbxcloud = "Sleitnick/rbxcloud@0.1.0-alpha.10"
+rbxcloud = "Sleitnick/rbxcloud@0.2.1"
 wally = "UpliftGames/wally@0.3.1"
