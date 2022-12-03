@@ -25,4 +25,4 @@ jobs:
 
     - run: rojo build -o game.rbxl
 
-    - run: rbxcloud experience publish -f game.rbxl -p 11706530527 -u 4146637897 -t published -a 1f3B05LmyE2dT1rTnOUqoITJDI9E8RJC8I9lIkROguT7YkzP
+    - run: rbxcloud experience publish -f game.rbxl -p ${{ secrets.PLACE_ID }} -u ${{ secrets.UNIVERSE_ID }} -t published -a ${{ secrets.API_KEY }}
