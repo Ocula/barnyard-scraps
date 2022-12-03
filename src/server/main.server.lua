@@ -1,5 +1,5 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Knit = require(ReplicatedStorage.Packages.Knit)
+local Knit = require(ReplicatedStorage.Packages:WaitForChild("Knit"))
 
 -- Load all services
 local Services = script.Parent:WaitForChild("services")
