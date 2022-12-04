@@ -3,8 +3,11 @@ local Knit = require(ReplicatedStorage.Packages:WaitForChild("Knit"))
 
 local controllers, dependencies = script.Parent:WaitForChild("controllers"), script.Parent:WaitForChild("dependencies")
 
-Knit.AddControllers(controllers)
 Knit.Dependencies = dependencies
+
+warn("Knit Init:", Knit)
+
+Knit.AddControllers(controllers)
 
 -- Start Knit
 local success, err = Knit.Start():await()
