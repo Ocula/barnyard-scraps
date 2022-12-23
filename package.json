@@ -21,6 +21,12 @@
     "nevermore": "^1.0.1"
   },
   "dependencies": {
-    "@quenty/maid": "^2.4.0"
+    "@quenty/acceltween": "^2.2.1",
+    "@quenty/adorneeutils": "^3.0.0",
+    "@quenty/binder": "^8.4.0",
+    "@quenty/camera": "^9.6.0",
+    "@quenty/maid": "^2.4.0",
+    "i": "^0.3.7",
+    "npm": "^9.2.0"
   }
 }
