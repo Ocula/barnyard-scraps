@@ -16,6 +16,10 @@
     "ServerScriptService": {
       "Server": {
         "$path": "src/server"
+      },
+
+      "Modules": {
+        "$path": "node_modules"
       }
     },
 
