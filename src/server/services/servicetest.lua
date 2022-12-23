@@ -7,7 +7,7 @@ local servicetest = Knit.CreateService({
 })
 
 function servicetest:KnitStart()
-	workspace:WaitForChild("Baseplate").Color = Color3.new(1, 0.258823, 0.258823)
+	workspace:WaitForChild("Baseplate").Color = Color3.new(0, 0.317647, 1)
 end
 
 function servicetest:KnitInit() end
