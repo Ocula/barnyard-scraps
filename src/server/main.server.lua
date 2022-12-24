@@ -17,6 +17,8 @@ local loader = ServerScriptService.Nevermore:FindFirstChild("LoaderUtils", true)
 
 Knit.Nevermore = require(loader).bootstrapGame(ServerScriptService.Nevermore)
 
+warn("Loaded in Nevermore modules:", Knit.Nevermore)
+
 Knit.Start()
 	:andThen(function()
 		print("Knit started")
