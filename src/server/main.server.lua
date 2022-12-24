@@ -1,3 +1,5 @@
+-- Initiation script
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 local Knit = require(ReplicatedStorage.Packages:WaitForChild("Knit"))
@@ -11,10 +13,9 @@ Knit.AddServices(Services)
 Knit.Dependencies = script.Parent:WaitForChild("dependencies")
 
 -- Load all nevermore modules.
-Knit.Nevermore = {}
-
 local loader = ServerScriptService.Nevermore:FindFirstChild("LoaderUtils", true).Parent
-local packages = require(loader).bootstrapGame(ServerScriptService.Nevermore)
+
+Knit.Nevermore = require(loader).bootstrapGame(ServerScriptService.Nevermore)
 
 Knit.Start()
 	:andThen(function()
