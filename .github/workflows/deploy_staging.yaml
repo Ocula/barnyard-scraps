@@ -25,4 +25,4 @@ jobs:
 
     - run: rojo build -o game.rbxl
 
-    - run: rbxcloud experience publish -f game.rbxl -p ${{ secrets.PLACE_ID }} -u ${{ secrets.UNIVERSE_ID }} -t published -a ${{ secrets.API_KEY }}
+ #   - run: rbxcloud experience publish -f game.rbxl -p ${{ secrets.PLACE_ID }} -u ${{ secrets.UNIVERSE_ID }} -t published -a ${{ secrets.API_KEY }}
