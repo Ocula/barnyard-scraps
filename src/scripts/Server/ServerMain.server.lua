@@ -3,12 +3,12 @@
 ]]
 local ServerScriptService = game:GetService("ServerScriptService")
 
-local loader = ServerScriptService.Barnyard-Scraps:FindFirstChild("LoaderUtils", true).Parent
-local packages = require(loader).bootstrapGame(ServerScriptService.Barnyard-Scraps)
+local loader = ServerScriptService.BarnyardScraps:FindFirstChild("LoaderUtils", true).Parent
+local packages = require(loader).bootstrapGame(ServerScriptService.BarnyardScraps)
 
 local serviceBag = require(packages.ServiceBag).new()
 
-serviceBag:GetService(packages.Barnyard-ScrapsService)
+serviceBag:GetService(packages.BarnyardScrapsService)
 
 serviceBag:Init()
 serviceBag:Start()
