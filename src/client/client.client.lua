@@ -5,8 +5,6 @@ local controllers, dependencies = script.Parent:WaitForChild("controllers"), scr
 
 Knit.Dependencies = dependencies
 
-warn("Knit Init:", Knit)
-
 Knit.AddControllers(controllers)
 
 -- Start Knit
