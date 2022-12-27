@@ -142,8 +142,6 @@ function Map:Destroy()
 end
 
 function Map:Start()
-	Aero = self
-	Puzzle = self.Modules.Puzzle
 	Maps = game:GetService("ServerStorage"):WaitForChild("Maps")
 
 	-- Coagulate maps

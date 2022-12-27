@@ -7,11 +7,13 @@
 	Handling the logic and interaction of in-game Spawns
 
 ]]
-
 local Spawn = {}
 Spawn.__index = Spawn
 
-local Aero
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Knit = require(ReplicatedStorage.Packages.Knit)
+
+local Utility = require(Knit.Library.Utility)
 
 function Spawn.new(_obj)
 	if not _obj:FindFirstAncestor("Workspace") then
@@ -40,7 +42,7 @@ function Spawn.new(_obj)
 end
 
 function Spawn:Destroy()
-	self.Services.SpawnService.Spawns[self.Object] = nil
+	Knit.GetService("SpawnService").Spawns[self.Object] = nil
 	game:GetService("CollectionService"):RemoveTag(self.Object, "Spawn")
 
 	for i, v in pairs(self.Services.GameService.Players) do
@@ -59,14 +61,10 @@ function Spawn:Teleport(_player, _radius)
 
 	--self._busy = true
 
-	self.Shared.Utility:TeleportPlayer(_player.Player, self.Object.CFrame, _radius)
+	Utility:TeleportPlayer(_player.Player, self.Object.CFrame, _radius)
 
 	return true
 	--self._busy = false
-end
-
-function Spawn:Init()
-	Aero = self
 end
 
 return Spawn

@@ -1,10 +1,10 @@
-local puzzle = {}
-puzzle.__index = puzzle
+local Puzzle = {}
+Puzzle.__index = Puzzle
 
-function puzzle.new()
+function Puzzle.new()
 	return {}
 end
 
-function puzzle:Initialize() end
+function Puzzle:Initialize() end
 
-return puzzle
+return Puzzle

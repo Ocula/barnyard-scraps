@@ -2,47 +2,29 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 local Knit = require(ReplicatedStorage.Packages:WaitForChild("Knit"))
 
--- Load all dependency modules into our utility library:
--- 		Get all nevermore modules
-local loader = ServerScriptService:FindFirstChild("LoaderUtils", true).Parent
-local nevermore = require(loader).bootstrapGame(ServerScriptService.Nevermore)
+local Shared = ReplicatedStorage:WaitForChild("Shared")
+local Packages = ReplicatedStorage:WaitForChild("Packages")
+local Dependencies = script.Parent:WaitForChild("Dependencies")
 
-local shared = ReplicatedStorage:WaitForChild("Shared")
+local Utility = require(Shared:WaitForChild("Utility"))
 
 Knit.Library = {}
-
-function _indexModules(folder, to)
-	for i, v in pairs(folder:GetChildren()) do
-		if v:IsA("ModuleScript") then
-			-- Reconcile any clones.
-			if to[v.Name] then
-				warn("Module of the same name already exists!", v)
-				continue
-			end
-
-			local success, module = pcall(function()
-				return require(v)
-			end)
-			if success then
-				warn("Successfully loaded", v.Name)
-				to[v.Name] = v
-			else
-				warn("Module load failed on:", v.Name, module)
-			end
-		end
-	end
-end
-
--- _indexModules(nevermore, Knit.Library)
-_indexModules(shared, Knit.Library)
-
--- Load server modules
 Knit.Modules = {}
-local dependencies = script.Parent:WaitForChild("dependencies")
 
-_indexModules(dependencies, Knit.Modules)
+local loader = ServerScriptService:FindFirstChild("LoaderUtils", true).Parent
+
+-- Load Nevermore Modules
+local Nevermore = require(loader).bootstrapGame(ServerScriptService.Nevermore)
+
+-- Load Library Modules (Nevermore Modules @shared & Wally-Installed Modules via Knit @packages)
+Utility:IndexModules(Shared, Knit.Library)
+Utility:IndexModules(Packages, Knit.Library)
+
+-- Load Server Dependencies (Class Modules/Utility Modules for the Server)
+Utility:IndexModules(Dependencies, Knit.Modules)
+
 -- Load Services
-local Services = script.Parent:WaitForChild("services")
+local Services = script.Parent:WaitForChild("Services")
 Knit.AddServices(Services)
 
 Knit.Start()

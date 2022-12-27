@@ -4,10 +4,10 @@
 
 --[[
 
-We gonna have our round modules inside this guy
+Game Service module. Handles the logic of players and game events. 
 
 1. Load in players through PlayerService, when they've completely loaded in, the game will throw them into GameService.Players
-2. Round will continue looping until it has enough players.  *1st check 
+2. Round will continue looping until it has enough players. *1st check 
 3. Once enough players, round will pass. 
 
 ]]
@@ -18,6 +18,7 @@ local Signal = require(Knit.Library.Signal)
 local Utility = require(Knit.Library.Utility)
 
 local GameService = Knit.CreateService({
+	Enabled = false,
 	Name = "GameService",
 	Client = {},
 	Players = {},
@@ -171,7 +172,7 @@ function GameService:Round(_loopBypass)
 		_passCheck = true
 
 		-- LOAD MAP
-		local _map = self.Modules.Map.new(false, self:_getPlaying(), math.random(1, 3)) -- map id, players, difficulty
+		local _map = Knit.Modules.Map.new(false, self:_getPlaying(), math.random(1, 3)) -- map id, players, difficulty
 		self.Map = _map
 
 		print("Map loaded:", _map)
@@ -197,13 +198,14 @@ function GameService:KnitStart()
 		GameService.Rounds[round.Name] = require(round)
 	end
 
+	--[[
 	self._roundOver = Signal.new()
 	self._roundOver:Connect(function()
 		task.wait(3)
 		self:Round()
 	end)
 
-	self:Round()
+	self:Round()--]]
 end
 
 function GameService:KnitInit() end

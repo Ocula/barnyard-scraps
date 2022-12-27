@@ -14,9 +14,7 @@ function PuzzleService:KnitStart()
 	local CServ = game:GetService("CollectionService")
 
 	local _binder = require(Knit.Library.Binder)
-	local _puzzleBinder = _binder.new("Puzzle", require(Knit.Modules.puzzle))
-
-	warn("Binder:", _puzzleBinder)
+	local _puzzleBinder = _binder.new("Puzzle", require(Knit.Modules.Puzzle))
 
 	_puzzleBinder:GetClassAddedSignal():Connect(function(Puzzle)
 		if Puzzle and not Puzzle._ShellClass then

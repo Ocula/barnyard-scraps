@@ -10,7 +10,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Knit = require(ReplicatedStorage.Packages.Knit)
 
-local EventClass = require(Knit.Dependencies.charEvent)
+local EventClass = require(Knit.Modules.charEvent)
 
 local character = Knit.CreateController({
 	Name = "character",
@@ -23,8 +23,6 @@ function character:AddEvent(_event)
 	local _newEvent = EventClass.new(_event)
 
 	table.insert(self.Events, _newEvent)
-
-	warn("Adding new event:", _newEvent)
 end
 
 function character:CreateObjects()
