@@ -21,10 +21,4 @@ Utility:IndexModules(Dependencies, Knit.Modules)
 Knit.AddControllers(Controllers)
 
 -- Start Knit
-local success, err = Knit.Start():await()
-
-warn("Knit Started on Client:", Knit)
-
-if not success then
-	error(tostring(err))
-end
+Knit.Start():andThen(function() end):catch(warn)

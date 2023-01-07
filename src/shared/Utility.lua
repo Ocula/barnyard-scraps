@@ -480,6 +480,10 @@ function Utility:IndexModules(folder, to)
 			--else
 			--	warn("Module load failed on:", v.Name, module)
 			--end
+		elseif v:IsA("Folder") then
+			if v.Name ~= "_Index" then
+				to[v.Name] = v
+			end
 		end
 	end
 end

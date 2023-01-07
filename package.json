@@ -31,6 +31,7 @@
     "@quenty/loader": "^6.0.1",
     "@quenty/maid": "^2.4.0",
     "@quenty/playerthumbnailutils": "^6.0.1",
+    "@quenty/qgui": "^2.1.0",
     "@quenty/servicebag": "^6.4.0",
     "i": "^0.3.7",
     "npm": "^9.2.0"

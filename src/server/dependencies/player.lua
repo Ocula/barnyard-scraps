@@ -1,6 +1,9 @@
 -- Player
 -- @ocula
 -- July 4, 2021
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Knit = require(ReplicatedStorage.Packages.Knit)
+local Promise = require(Knit.Library.Promise)
 
 local Player = {}
 Player.__index = Player
@@ -15,8 +18,7 @@ function Player.new(_player, _profile)
 		Player = _player,
 	}, Player)
 
-	-- Reconcicle player profile:
-
+	-- Reconcile player profile:
 	for _saveIndex, _saveValue in pairs(_profile.Data) do
 		self[_saveIndex] = _saveValue
 	end

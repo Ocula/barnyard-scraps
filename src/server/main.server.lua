@@ -25,10 +25,7 @@ Utility:IndexModules(Dependencies, Knit.Modules)
 
 -- Load Services
 local Services = script.Parent:WaitForChild("Services")
+
 Knit.AddServices(Services)
 
-Knit.Start()
-	:andThen(function()
-		print("Knit started", Knit)
-	end)
-	:catch(warn)
+Knit.Start():andThen(function() end):catch(warn)

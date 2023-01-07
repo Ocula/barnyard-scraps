@@ -10,8 +10,7 @@ function CmdrService:KnitStart()
 	local Cmdr = require(Knit.Library.Cmdr)
 
 	Cmdr:RegisterDefaultCommands()
-
-	warn("CMDR started on Server", Cmdr)
+	Cmdr:RegisterHooksIn(script.Hooks)
 end
 
 function CmdrService:KnitInit() end

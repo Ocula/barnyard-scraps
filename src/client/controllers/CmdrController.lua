@@ -7,7 +7,7 @@ function CmdrController:KnitStart()
 	local Cmdr = require(ReplicatedStorage:WaitForChild("CmdrClient"))
 
 	-- Configurable, and you can choose multiple keys
-	Cmdr:SetActivationKeys({ Enum.KeyCode.Asterisk })
+	Cmdr:SetActivationKeys({ Enum.KeyCode.F2 })
 end
 
 function CmdrController:KnitInit() end
