@@ -25,9 +25,18 @@ local utility = {
 
 		Add = 1.25,
 	},
+
+	hidden = false 
 }
 
 function Splash:init()
+	-- Listen Transparency
+	self.listenTransparency, self.setTransparency = Roact.createBinding(0)
+
+	utility.SetTransparency = function(value)
+		self.setTransparency(value) 
+	end 
+
 	-- Background Texture Loop
 	self.ref = Roact.createRef()
 
@@ -107,6 +116,13 @@ function Splash:init()
 	utility.motors.doors = self.doorMotors
 	utility.motors.building = self.buildingMotor
 	utility.motors.roof = self.roofMotor
+end
+
+function Splash:hide()
+	if utility.hidden then return end 
+	utility.hidden = true 
+
+	utility.SetTransparency(Otter.spring(1))  
 end
 
 function Splash:setDoorGoals(left, right, options)
@@ -191,7 +207,7 @@ function Splash:render()
 		Splash = Roact.createElement(InterfaceUtils.getFrame, {
 			Size = UDim2.new(1, 0, 1, 0),
 			Position = UDim2.new(0.5, 0, 0.5, 0),
-			BackgroundTransparency = 0,
+			BackgroundTransparency = self.listenTransparency,
 			BackgroundColor3 = Color3.new(1, 1, 1),
 		}, {
 			UIGradient = InterfaceUtils.getGradient({
@@ -232,6 +248,7 @@ function Splash:render()
 					end),
 					BackgroundColor3 = Color3.new(1, 1, 1),
 					BackgroundTransparency = 1,
+					--ImageTransparency = self.listenTransparency, 
 				}, {
 
 					Building = Roact.createElement(InterfaceUtils.getImageLabel, {
@@ -252,6 +269,7 @@ function Splash:render()
 						end),
 						-- UDim2.new(440.5 / utility.resolution, 0, 770 / utility.resolution, 0),
 						ZIndex = 2,
+						ImageTransparency = self.listenTransparency,
 					}, {
 						Doors = Roact.createElement(InterfaceUtils.getFrame, {
 							Size = UDim2.new(1, 0, 1, 0),
@@ -268,6 +286,7 @@ function Splash:render()
 								-- [CLOSED]: X - 0.5
 								-- [OPEN]: X - 0.625
 								ZIndex = 4,
+								ImageTransparency = self.listenTransparency,
 							}),
 
 							LeftDoor = Roact.createElement(InterfaceUtils.getImageLabel, {
@@ -281,6 +300,7 @@ function Splash:render()
 								-- [CLOSED]: X - 0.5
 								-- [OPEN]: X - 0.375
 								ZIndex = 4,
+								ImageTransparency = self.listenTransparency,
 							}),
 						}),
 
@@ -290,6 +310,7 @@ function Splash:render()
 							Position = UDim2.new(0.5 + (200 / utility.resolution) / 2, 0, 1.4, 0),
 							BackgroundColor3 = Color3.new(1, 1, 1),
 							ZIndex = 1,
+							BackgroundTransparency = self.listenTransparency,
 						}, {
 							UICorner = Roact.createElement("UICorner", {
 								CornerRadius = UDim.new(1, 0),
@@ -302,6 +323,7 @@ function Splash:render()
 								AnchorPoint = Vector2.new(0, 0),
 								BackgroundColor3 = Color3.new(0.407843, 0.886274, 0.423529),
 								ClipsDescendants = true,
+								BackgroundTransparency = self.listenTransparency,
 								ZIndex = 3,
 							}, {
 								--[[StripeTexture = Roact.createElement("ImageLabel", {
@@ -344,6 +366,7 @@ function Splash:render()
 						end),
 						-- UDim2.new(441.00 / utility.resolution, 0, 401.00 / utility.resolution, 0),
 						ZIndex = 4,
+						ImageTransparency = self.listenTransparency,
 					}),
 
 					Silo = Roact.createElement(InterfaceUtils.getImageLabel, {
@@ -351,6 +374,7 @@ function Splash:render()
 						Size = UDim2.new(256 / utility.resolution, 0, 872 / utility.resolution, 0),
 						Position = UDim2.new(876 / utility.resolution, 0, 512 / utility.resolution, 0),
 						ZIndex = 1,
+						ImageTransparency = self.listenTransparency,
 					}),
 
 					Grass = Roact.createElement(InterfaceUtils.getImageLabel, {
@@ -358,6 +382,7 @@ function Splash:render()
 						Size = UDim2.new(984 / utility.resolution, 0, 119 / utility.resolution, 0),
 						Position = UDim2.new(512 / utility.resolution, 0, 929.50 / utility.resolution, 0),
 						ZIndex = 5,
+						ImageTransparency = self.listenTransparency,
 					}),
 				}),
 
@@ -371,9 +396,9 @@ function Splash:render()
 					ScaleType = "Tile",
 					TileSize = UDim2.new(0, utility.resolution / 2, 0, utility.resolution / 2),
 					Rotation = 0,
-					ImageTransparency = 0.95,
+					ImageTransparency = self.listenTransparency:getValue() + 0.95,
 					Image = InterfaceUtils.getImageId("BackgroundTexture"),
-					ImageColor3 = Color3.new(1, 1, 1),
+					ImageColor3 = Color3.new(1, 1, 1), --a
 				}),
 			}),
 		}),

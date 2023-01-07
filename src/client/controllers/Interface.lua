@@ -77,9 +77,14 @@ function ui:Load()
 	splashScreen:load(1)
 	splashScreen:shake(1.5)
 	splashScreen:toggleDoors(true)
+
+	task.wait(.5)
+
+	splashScreen:unmount() 
 end
 
 function ui:KnitStart()
+	warn("Started")
 	self:Load()
 end
 

@@ -1,5 +1,5 @@
 -- Build and provide functions for game's boot Splash Screen
--- hi / hey
+
 local Splash = {}
 Splash.__Index = Splash
 
@@ -60,7 +60,11 @@ function Splash:load(percent, options) -- Set Loading bar and shake effect to Lo
 	_motor:setGoal(Otter.spring(percent, options or {}))
 end
 
-function Splash:updateText() end
+function Splash:unmount()
+	-- Exit effect
+	self.splashScreen:hide() 
+	Roact.unmount(self.splashMount) 
+end 
 
 function Splash:mount()
 	if not self.splashScreen then
