@@ -6,7 +6,7 @@
 
     "ReplicatedStorage": {
       "Shared": {
-        "$path": "src/shared"
+        "$path": "src/Shared"
       },
 
       "Packages": {
@@ -16,7 +16,7 @@
 
     "ServerScriptService": {
       "Server": {
-        "$path": "src/server"
+        "$path": "src/Server"
       },
       "Nevermore": {
         "$path": "node_modules"
@@ -26,7 +26,7 @@
     "StarterPlayer": {
       "StarterPlayerScripts": {
         "Client": {
-          "$path": "src/client"
+          "$path": "src/Client"
         }
       }
     },
