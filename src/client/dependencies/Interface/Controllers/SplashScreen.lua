@@ -1,5 +1,5 @@
 -- Build and provide functions for game's boot Splash Screen
--- hi
+-- hi / hey
 local Splash = {}
 Splash.__Index = Splash
 
