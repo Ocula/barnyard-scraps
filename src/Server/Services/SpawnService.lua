@@ -18,8 +18,6 @@ function SpawnService:GetRandomSpawn(_villain)
 		return _value.Villain == _villain
 	end)
 
-	warn("Filtered table:", _filteredTable)
-
 	local _count = self.Shared.Utility:CountTable(_filteredTable)
 	local _rand = math.random(1, _count)
 

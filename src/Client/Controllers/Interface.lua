@@ -7,7 +7,7 @@ local ui = Knit.CreateController({
 	Name = "ui",
 	serverLoaded = false,
 
-	goalWait = 10, -- We dont want the player waiting to load in any longer than 5 seconds.
+	goalWait = 7, -- We dont want the player waiting to load in any longer than 3 seconds.
 })
 
 local clientBegan
@@ -26,11 +26,11 @@ function ui:Load()
 
 	local function getCurrentLoadBarPosition()
 		local bin = splashScreen.bin
-		local perc = bin.currentPercentage or 0.05
+		local perc = bin.currentPercentage or 0.1
 
 		local amountToGo = 1 - perc
 
-		return (perc + amountToGo / (math.random(self.goalWait / 2, self.goalWait)))
+		return (perc + amountToGo / ((math.random((self.goalWait / 2) * 10, (self.goalWait * 10))) / 10))
 	end
 
 	ContentProvider:PreloadAsync(assets)
@@ -38,7 +38,8 @@ function ui:Load()
 	-- If we haven't loaded on the server yet, give some content to keep it interesting.
 	if not self.serverLoaded then
 		repeat
-			splashScreen:shake(math.random(10, 30) / 10, "BirdFlutter" .. math.random(1, 3))
+			local _id = "Shake" .. math.random(1, 3)
+			splashScreen:shake(math.random(10, 30) / 10, _id)
 			splashScreen:load(getCurrentLoadBarPosition())
 
 			for _ = 0, 1.5, 0.01 do -- special wait so we dont miss the server loading.
@@ -61,7 +62,8 @@ function ui:Load()
 		for i = 0, _timeLeftToWait, inc do
 			task.wait(1)
 
-			splashScreen:shake(math.random(10, 30) / 10, "BirdFlutter" .. math.random(1, 3))
+			local _id = "Shake" .. math.random(1, 3)
+			splashScreen:shake(math.random(10, 30) / 10, _id)
 
 			if i > (_timeLeftToWait - inc) then
 				splashScreen:load(1)
@@ -78,13 +80,12 @@ function ui:Load()
 	splashScreen:shake(1.5)
 	splashScreen:toggleDoors(true)
 
-	task.wait(.5)
+	task.wait(1)
 
-	splashScreen:unmount() 
+	splashScreen:unmount()
 end
 
 function ui:KnitStart()
-	warn("Started")
 	self:Load()
 end
 

@@ -55,6 +55,14 @@ function Utility.getAssembly(part, found, list)
 	return list
 end
 
+function Utility.createFolder(name, parent)
+	local _folder = Instance.new("Folder")
+	_folder.Name = name
+	_folder.Parent = parent
+
+	return _folder
+end
+
 -- Returns in Top, Middle, Bottom (Top is always white, Middle is the color, and Bottom is a clamped darker version of the color)
 function Utility:GetFrameColors(color)
 	local hue, saturation, value = Color3.toHSV(color)

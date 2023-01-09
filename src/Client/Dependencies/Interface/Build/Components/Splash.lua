@@ -26,16 +26,18 @@ local utility = {
 		Add = 1.25,
 	},
 
-	hidden = false 
+	hidden = false,
 }
 
 function Splash:init()
 	-- Listen Transparency
 	self.listenTransparency, self.setTransparency = Roact.createBinding(0)
 
-	utility.SetTransparency = function(value)
-		self.setTransparency(value) 
-	end 
+	utility.motors.transparency = Otter.createSingleMotor(0)
+
+	utility.motors.transparency:onStep(function(value)
+		self.setTransparency(value)
+	end)
 
 	-- Background Texture Loop
 	self.ref = Roact.createRef()
@@ -58,7 +60,7 @@ function Splash:init()
 	end)
 
 	-- Loading Bar set
-	self.LoadingBarBind, self.SetLoadingBind = Roact.createBinding(0.05)
+	self.LoadingBarBind, self.SetLoadingBind = Roact.createBinding(0.1)
 
 	utility.SetLoadPercentage = function(set)
 		self.SetLoadingBind(set)
@@ -119,10 +121,19 @@ function Splash:init()
 end
 
 function Splash:hide()
-	if utility.hidden then return end 
-	utility.hidden = true 
+	if utility.hidden then
+		return
+	end
+	utility.hidden = true
 
-	utility.SetTransparency(Otter.spring(1))  
+	self:shake(3)
+
+	utility.motors.transparency:setGoal(Otter.spring(1, {
+		frequency = 5.5,
+		dampingRatio = 1,
+	}))
+
+	task.wait(1)
 end
 
 function Splash:setDoorGoals(left, right, options)
@@ -248,7 +259,7 @@ function Splash:render()
 					end),
 					BackgroundColor3 = Color3.new(1, 1, 1),
 					BackgroundTransparency = 1,
-					--ImageTransparency = self.listenTransparency, 
+					--ImageTransparency = self.listenTransparency,
 				}, {
 
 					Building = Roact.createElement(InterfaceUtils.getImageLabel, {
@@ -336,11 +347,21 @@ function Splash:render()
 									end),
 									ScaleType = "Tile",
 									TileSize = UDim2.new(0, utility.resolution / 2, 0, utility.resolution / 2),
-									Rotation = 0,
-									ImageTransparency = 0.9,
+									Rotation = self.buildingBind:map(function(value)
+										-- alter relative to distance from origin
+										local orig = Vector2.new(
+											utility.guiPositionResolutions.building.X,
+											utility.guiPositionResolutions.building.Y
+										)
+										local new =
+											Vector2.new(value.X * utility.resolution, value.Y * utility.resolution)
+										local mag = (new - orig).Magnitude
+										return - (mag * 0.125) --* math.random(-1, 1)
+									end),
+									ImageTransparency = 0.95,
 									Image = InterfaceUtils.getImageId("StripeTexture"),
 									ImageColor3 = Color3.new(1, 1, 1),
-								}),--]]
+								}), --]]
 								UICorner_2 = Roact.createElement("UICorner", {
 									CornerRadius = UDim.new(1, 0),
 								}),
@@ -396,7 +417,9 @@ function Splash:render()
 					ScaleType = "Tile",
 					TileSize = UDim2.new(0, utility.resolution / 2, 0, utility.resolution / 2),
 					Rotation = 0,
-					ImageTransparency = self.listenTransparency:getValue() + 0.95,
+					ImageTransparency = self.listenTransparency:map(function(value)
+						return 0.95 + value
+					end),
 					Image = InterfaceUtils.getImageId("BackgroundTexture"),
 					ImageColor3 = Color3.new(1, 1, 1), --a
 				}),

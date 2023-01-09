@@ -37,7 +37,8 @@ end
 
 function Splash:shake(vel, sound) -- Parameters: vel - Velocity
 	if sound then
-		local id = Sound.getSoundId(sound)
+		local sound = Sound.getSound(sound)
+		sound:Play()
 	end
 
 	self.splashScreen:shake(vel)
@@ -62,9 +63,9 @@ end
 
 function Splash:unmount()
 	-- Exit effect
-	self.splashScreen:hide() 
-	Roact.unmount(self.splashMount) 
-end 
+	self.splashScreen:hide()
+	Roact.unmount(self.splashTree)
+end
 
 function Splash:mount()
 	if not self.splashScreen then
@@ -73,7 +74,7 @@ function Splash:mount()
 
 	self.splashMount = Roact.createElement(self.splashScreen)
 
-	Roact.mount(self.splashMount, PlayerGui)
+	self.splashTree = Roact.mount(self.splashMount, PlayerGui)
 end
 
 return Splash

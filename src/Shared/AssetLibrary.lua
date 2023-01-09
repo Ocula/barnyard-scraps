@@ -20,9 +20,23 @@ AssetLibrary.Assets = {
 		Game = {
 			Theme = {},
 			Effects = {
-				BirdFlutter1 = { 2 },
-				BirdFlutter2 = { 1 },
-				BirdFlutter3 = { 3 },
+				Shake1 = {
+					SoundId = 12087471292,
+					Start = 3,
+					--End = 0.76,
+					PlaybackSpeed = 0.8,
+				},
+				Shake2 = {
+					SoundId = 12087471292,
+					Start = 3,
+					--End = 1.4,
+					PlaybackSpeed = 0.9,
+				},
+				Shake3 = {
+					SoundId = 12087471292,
+					Start = 3,
+					PlaybackSpeed = 0.7,
+				},
 			},
 		},
 	},
@@ -31,7 +45,7 @@ AssetLibrary.Assets = {
 }
 
 function AssetLibrary.search(query)
-	local result
+	local result, parent
 
 	local function recursiveSearch(target)
 		if result then
@@ -52,6 +66,7 @@ function AssetLibrary.search(query)
 				break
 			else
 				if type(value) == "table" then
+					parent = target
 					recursiveSearch(value)
 				end
 			end
@@ -60,7 +75,7 @@ function AssetLibrary.search(query)
 
 	recursiveSearch(AssetLibrary)
 
-	return result
+	return result, parent
 end
 
 function AssetLibrary.get(index)
@@ -86,8 +101,8 @@ function AssetLibrary:Aggregate()
 			if type(v) == "number" then
 				table.insert(_array, "rbxassetid://" .. v) -- Indexing
 			elseif type(v) == "table" then
-				if v[1] and type(v[1]) == "number" then -- Indexing sound assets
-					table.insert(_array, "rbxassetid://" .. v[1])
+				if v.SoundId then -- Indexing sound assets
+					table.insert(_array, "rbxassetid://" .. v.SoundId)
 				else
 					getAssets(v)
 				end
