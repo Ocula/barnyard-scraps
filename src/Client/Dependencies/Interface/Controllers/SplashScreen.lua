@@ -1,5 +1,4 @@
 -- Build and provide functions for game's boot Splash Screen
-
 local Splash = {}
 Splash.__Index = Splash
 
@@ -20,19 +19,17 @@ function Splash:createComponent()
 end
 
 function Splash:toggleDoors(bool) -- Open / Closed (True / False)
-	if bool then
-		self.splashScreen:setDoorGoals(0.4, 0.6, {
-			dampingRatio = 0.35,
-			frequency = 4,
-		})
-		--Roact.createElement(self.splashScreen, {self.setLeftDoorBind:SetGoal({ X = 0.65, Y = 0 }),})
-		--Roact.update(self.splashMount, Roact.createElement(self.splashScreen, {}))
-	else
-		self.splashScreen:setDoorGoals(0.5, 0.5, {
-			dampingRatio = 0.35,
-			frequency = 4,
-		})
+	local left, right = 0.4, 0.6
+
+	if not bool then
+		left = 0.5
+		right = 0.5
 	end
+
+	self.splashScreen:setDoorGoals(left, right, {
+		dampingRatio = 0.35,
+		frequency = 4,
+	})
 end
 
 function Splash:shake(vel, sound) -- Parameters: vel - Velocity
