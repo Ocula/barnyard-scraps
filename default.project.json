@@ -1,5 +1,5 @@
 {
-  "name": "barnyard-scraps",
+  "name": "play-planet",
   "globIgnorePaths": [ "**/.package-lock.json" , "*/.json" , "node_modules/.bin", "node_modules/i", "node_modules/nevermore", "node_modules/npm" ], 
   "tree": {
     "$className": "DataModel",
@@ -19,7 +19,7 @@
         "$path": "src/Server"
       },
       "Nevermore": {
-        "$path": "node_modules"
+        "$path": "nevermore_modules"
       }
     },
 
@@ -27,35 +27,21 @@
       "StarterPlayerScripts": {
         "Client": {
           "$path": "src/Client"
+        },
+
+        "PlayerScriptsLoader": {
+          "$path": "src/Internal/PlayerScriptsLoader"
         }
+      },
+
+      "StarterCharacterScripts": {
+        "$path": "src/Internal/StarterCharacterScripts"
       }
     },
 
     "Workspace": {
       "$properties": {
         "FilteringEnabled": true
-      },
-      "Baseplate": {
-        "$className": "Part",
-        "$properties": {
-          "Anchored": true,
-          "Color": [
-            0.38823,
-            0.37254,
-            0.38823
-          ],
-          "Locked": true,
-          "Position": [
-            0,
-            -10,
-            0
-          ],
-          "Size": [
-            512,
-            20,
-            512
-          ]
-        }
       }
     },
     "Lighting": {

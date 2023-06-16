@@ -13,13 +13,22 @@ local PlayerService = Knit.CreateService({
 })
 
 -- Dependencies
+local Utility = require(Knit.Library.Utility)
 local Player = require(Knit.Modules.Player)
 local Profile = {
 	Profiles = {},
-	Key = "SCRAPS_TESTING_",
+	Key = "KNOCKOFF_TESTING",
 	Service = require(Knit.Modules.Profile),
 	Blank = require(Knit.Modules.Profile.Blank),
 }
+
+function PlayerService:GetPlayersInLobby()
+	local playersToReturn = Utility:FilterTable(self.Players, function(player)
+		return player.Lobby
+	end)
+
+	return playersToReturn
+end
 
 function PlayerService.getProfile(user)
 	return Profile.Profiles[user]
@@ -42,14 +51,25 @@ function PlayerService:new(newPlayer)
 		end)
 
 		Profile.Profiles[newPlayer] = loadedProfile
+
+		-- Handle player only if profile is loaded.
+		local playerObject = Player.new(newPlayer, loadedProfile)
+
+		self.Players[newPlayer] = playerObject
+
+		playerObject:Spawn() -- Yield until spawned.
+
+		self.Client.PlayerLoaded:Fire(newPlayer, true)
 	end
-
-	-- Handle player
-	local playerObject = Player.new(newPlayer, loadedProfile)
-	self.Players[newPlayer] = playerObject
-
-	self.Client.PlayerLoaded:Fire(newPlayer, true)
 end
+
+function PlayerService:GetPlayer(player: Player)
+	return self.Players[player] 
+end 
+
+function PlayerService:GetPlayers()
+	return self.Players 
+end 
 
 function PlayerService:KnitStart()
 	local Players = game:GetService("Players")
@@ -60,6 +80,11 @@ function PlayerService:KnitStart()
 
 	Players.PlayerAdded:Connect(function(p)
 		self:new(p)
+	end)
+
+	Players.PlayerRemoving:Connect(function(player)
+		local playerObject = self.Players[player]
+		playerObject.Leaving:Fire()
 	end)
 end
 

@@ -17,12 +17,11 @@ local Utility = require(Knit.Library.Utility)
 
 function Spawn.new(_obj)
 	if not _obj:FindFirstAncestor("Workspace") then
-		warn("Not a member of workspace.")
-		return { _ShellClass = true, Destroy = function() end }
+		--warn("Not a member of workspace.")
+		return { _ShellClass = true, Destroy = function() end, Create = function() end }
 	end
 
 	local _data = _obj:GetAttributes()
-	local _type = _data.Type
 
 	-- Create new table based on data.
 
@@ -35,10 +34,12 @@ function Spawn.new(_obj)
 	end
 
 	_newData.Object = _obj
-	_data = nil -- will this get gc'ed?
 
-	local self = setmetatable(_newData, Spawn)
-	return self
+	return setmetatable(_newData, Spawn)
+end
+
+function Spawn:Create()
+	warn("Create Called on Spawn")
 end
 
 function Spawn:Destroy()
@@ -56,12 +57,40 @@ function Spawn:Destroy()
 	end
 end
 
-function Spawn:Teleport(_player, _radius)
-	--if (self._busy) then warn("Spawn is busy, rerouting") return end
+function Spawn:isBusy()
+	return self._busy
+end
 
-	--self._busy = true
+function Spawn:Teleport(_player, _radius)
+	if self._busy then
+		warn("Spawn is busy, rerouting")
+		return false
+	end
+
+	self._busy = true
 
 	Utility:TeleportPlayer(_player.Player, self.Object.CFrame, _radius)
+
+	-- Hold player here for a second to double check SetState
+
+	if self.SetState then -- This spawn is in a different Gravity place. 
+		_player:SetState(self.SetState) 
+	end
+
+	if self.HoldPlayer then
+		local duration = self.Forcefield or self.HoldDuration
+
+		local alignPos = Utility:HoldPlayer(_player.Player, self.Object.Position)
+
+		if duration then
+			task.delay(duration, function()
+				alignPos:Destroy()
+				self._busy = false
+			end)
+		end
+	else
+		self._busy = false
+	end
 
 	return true
 	--self._busy = false

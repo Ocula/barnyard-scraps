@@ -1,6 +1,8 @@
 -- Utility
 -- @ocula
 -- February 13, 2021
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Knit = require(ReplicatedStorage.Packages.Knit)
 
 local Utility = {}
 
@@ -28,6 +30,16 @@ function Utility:GetUniqueId()
 
 	--Use guidData
 	return guidData
+end
+
+-- Utility Functions
+function Utility.splitString(inputStr, delimiter)
+	local out = {}
+	for str in string.gmatch(inputStr, "([^" .. delimiter .. "]+)") do
+		table.insert(out, str)
+	end
+
+	return out
 end
 
 function Utility.getAssembly(part, found, list)
@@ -99,6 +111,37 @@ function Utility:StaticCombineTables(a, b)
 	return c
 end
 
+--[=[
+function CentralizeModel(model)
+	local newPart = Instance.new("Part")
+	newPart.Size = Vector3.new(0.1,0.1,0.1)
+	newPart.CFrame = model:GetBoundingBox()
+	newPart.CanCollide = false
+	newPart.Transparency = 1
+	newPart.Parent = model
+	newPart.Name = "Center"
+	newPart.Anchored = true
+	
+	
+	model.PrimaryPart = newPart
+end 
+
+CentralizeModel(game.Selection:Get()[1])
+]=]
+
+function Utility:CentralizeModel(model)
+	local newPart = Instance.new("Part")
+	newPart.Size = Vector3.new(0.1, 0.1, 0.1)
+	newPart.CFrame = model:GetBoundingBox()
+	newPart.CanCollide = false
+	newPart.Transparency = 1
+	newPart.Parent = model
+	newPart.Name = "Center"
+	newPart.Anchored = true
+
+	model.PrimaryPart = newPart
+end
+
 function Utility:GetTableAmount(tbl)
 	local _count = 0
 
@@ -110,7 +153,8 @@ function Utility:GetTableAmount(tbl)
 end
 
 function Utility:FilterTable(_table, ...)
-	return self.Shared.TableUtil.Filter(_table, ...)
+	local TableUtil = require(Knit.Library.TableUtil)
+	return TableUtil.Filter(_table, ...)
 end
 
 function Utility:CountTable(_table, _condition)
@@ -136,7 +180,7 @@ function Utility:CountTable(_table, _condition)
 end
 
 function Utility:GetRandomTableValue(_table)
-	local _count = self.Shared.Utility:CountTable(_table)
+	local _count = self:CountTable(_table)
 
 	if _count <= 0 then
 		warn("The table passed through Utility is empty")
@@ -201,6 +245,35 @@ function Utility:FindParent(_instance, _search)
 	end
 
 	return _parent
+end
+
+function Utility:HoldPlayer(_player, pos) -- length might be a callback function maybe?
+	if _player then
+		local _char = _player.Character
+
+		if _char then
+			local _hum = _char:FindFirstChild("Humanoid")
+			if _hum then
+				if _hum.Health >= 0 then
+					local _humRoot = _char:FindFirstChild("HumanoidRootPart")
+					local attachment0 = Instance.new("Attachment")
+					local alignPosition = Instance.new("AlignPosition")
+					attachment0.Parent = _humRoot
+
+					alignPosition.Mode = Enum.PositionAlignmentMode.OneAttachment
+					alignPosition.RigidityEnabled = true
+					alignPosition.ApplyAtCenterOfMass = true
+
+					alignPosition.Attachment0 = attachment0
+					alignPosition.Position = pos
+
+					alignPosition.Parent = _humRoot
+
+					return alignPosition
+				end
+			end
+		end
+	end
 end
 
 function Utility:TeleportPlayer(_player, cf, _radius)

@@ -2,25 +2,31 @@
 -- @ocula
 -- July 4, 2021
 
-local Map = {
-	Maps = {},
-
-	_mapRandom = {},
-}
+local Map = {}
 Map.__index = Map
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local HttpService = game:GetService("HttpService")
+
 local Knit = require(ReplicatedStorage.Packages.Knit)
-local Maps
 
-function Map.new(_mapid)
+local Utility = require(Knit.Library.Utility)
+local Maid = require(Knit.Library.Maid)
+
+function Map.new(data)
+	local MapService = Knit.GetService("MapService")
+
 	local self = setmetatable({
-		MapId = _mapid,
-
+		MapId = data.MapId or HttpService:GenerateGUID(false),
+		Map = data.Map:Clone(),
 		Spawns = {},
-		Puzzles = {},
-		Exits = {},
+
+		_maid = Maid.new(),
+		-- Puzzles = {}, 	-- Deprecated
+		-- Exits = {}, 		-- Deprecated
 	}, Map)
+
+	MapService:add(self)
 
 	return self
 end
@@ -40,14 +46,38 @@ function Map:GetExits()
 	return self.Exits
 end
 
+function Map:SetCFrame(cf)
+	local obj = self.Map
+	if obj then
+		obj:PivotTo(cf)
+	end
+end
+
+function Map:GetCFrame()
+	local obj = self.Map
+	if obj then
+		return obj:GetBoundingBox()
+	end
+end
+
+function Map:GetOpenSpawn()
+	warn("Getting open spawn")
+
+	for i, v in pairs(self.Spawns) do
+		if not v:isBusy() then
+			warn("Found", v)
+			return v
+		end
+	end
+end
+
 -- Set Spawn
 function Map:SetSpawns()
 	local _spawns = {}
-	local _obj = self.Object
+	local _obj = self.Map
 
 	for _, v in pairs(Knit.GetService("SpawnService").Spawns) do
-		local _parent = self.Shared.Utility:FindParent(v.Object, _obj)
-
+		local _parent = Utility:FindParent(v.Object, _obj)
 		if _parent then
 			table.insert(_spawns, v)
 		end
@@ -56,6 +86,40 @@ function Map:SetSpawns()
 	self.Spawns = _spawns
 end
 
+function Map:Create() -- Need to create back/front walls
+	local MapService = Knit.GetService("MapService")
+	local mapSlot = MapService:getSlot()
+
+	mapSlot.inUse = true
+
+	local _obj = self.Map
+	_obj.Parent = workspace
+
+	self:SetCFrame(mapSlot.CFrame)
+
+	self._slot = mapSlot
+
+	return _obj
+end
+
+function Map:Destroy()
+	self._maid:DoCleaning()
+
+	for _, v in pairs(self.Spawns) do
+		v:Destroy()
+	end
+
+	if self.Map then
+		self.Map:Destroy()
+	end
+
+	self._slot.inUse = false
+end
+
+return Map
+
+-- Deprecated (used to Set Puzzle objects in a map)
+--[[
 function Map:SetPuzzles(_number)
 	local _obj = self.Object
 	local _puzzles = {}
@@ -101,55 +165,4 @@ function Map:SetPuzzles(_number)
 	end
 
 	self.Puzzles = _totalToChooseFrom
-end
-
---
-
-function Map:Create()
-	warn("Create is being called")
-	local _map
-
-	if not self.MapId then
-		_map = self._mapRandom[math.random(1, #self._mapRandom)]
-	else
-		for i, v in pairs(self._mapRandom) do
-			if v.Name == self.MapId then
-				_map = i
-			end
-		end
-	end
-
-	local _obj = self.Maps[_map]:Clone()
-	self.Object = _obj
-
-	_obj.Parent = workspace
-
-	return _obj
-end
-
-function Map:Destroy()
-	for _, v in pairs(self.Puzzles) do
-		v:Destroy()
-	end
-
-	for _, v in pairs(self.Spawns) do
-		v:Destroy()
-	end
-
-	if self.Object then
-		self.Object:Destroy()
-	end
-end
-
-function Map:Start()
-	Maps = game:GetService("ServerStorage"):WaitForChild("Maps")
-
-	-- Coagulate maps
-
-	for i, v in pairs(Maps:GetChildren()) do
-		self.Maps[i] = v
-		table.insert(self._mapRandom, i)
-	end
-end
-
-return Map
+end--]]

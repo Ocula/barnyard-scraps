@@ -14,29 +14,38 @@ Game Service module. Handles the logic of players and game events.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Knit = require(ReplicatedStorage.Packages.Knit)
 
-local Signal = require(Knit.Library.Signal)
-local Utility = require(Knit.Library.Utility)
-
 local GameService = Knit.CreateService({
 	Enabled = false,
 	Name = "GameService",
-	Client = {},
+	Client = {
+		SetCameraState = Knit.CreateSignal(),
+	},
 	Players = {},
+	Sessions = {},
 	Rounds = {},
 
 	_roundInProgress = false,
 	_amountNeededPerRound = 1,
+
+	_matchTesting = false, -- When true, the game will start with an infinite match that admits all new players.
 })
+
+-- Dependencies
+local Signal = require(Knit.Library.Signal)
+local Utility = require(Knit.Library.Utility)
+local Map = require(Knit.Modules.Map)
 
 -- Create events
 GameService.SetControls = Signal.new()
 GameService.Countdown = Signal.new()
 
--- Methods
+-- --------------------- --
+-- // UTILITY METHODS \\ --
+-- --------------------- --
 function GameService:_getQueued()
 	local _queued = {}
 
-	for i, v in pairs(self.Players) do
+	for _, v in pairs(self.Players) do
 		if v.Enabled then
 			table.insert(_queued, v)
 		end
@@ -97,10 +106,6 @@ function GameService:_getRound(_roundtype)
 end
 
 function GameService:_getMap()
-	if not self.Map then
-		warn("No map has been loaded")
-		return false
-	end
 	return self.Map
 end
 
@@ -112,11 +117,9 @@ function GameService:_canPlay()
 	return (_playing >= self._amountNeededPerRound) -- Add to this conditional as needed.
 end
 
----------------------------
 -- --------------------- --
 -- // CLIENT  METHODS \\ --
 -- --------------------- --
----------------------------
 
 function GameService.Client:CheckInProgress()
 	return self.Server._roundInProgress
@@ -172,7 +175,7 @@ function GameService:Round(_loopBypass)
 		_passCheck = true
 
 		-- LOAD MAP
-		local _map = Knit.Modules.Map.new(false, self:_getPlaying(), math.random(1, 3)) -- map id, players, difficulty
+		local _map = Map.new()
 		self.Map = _map
 
 		print("Map loaded:", _map)
@@ -192,6 +195,30 @@ function GameService:Round(_loopBypass)
 	end
 end
 
+-- Matches have to be handled differently because they are by session request only.
+function GameService:requestMatch(players)
+	-- Testing
+	local AssetLibrary = require(Knit.Library.AssetLibrary)
+	local mapObject = AssetLibrary.getMap("TestMap")
+
+	local map = Map.new({
+		Map = mapObject,
+	})
+
+	map:Create()
+	map:SetSpawns()
+
+	local match = require(script.Match).new({
+		Players = players,
+		Map = map,
+	})
+	local sessionId = match:GetSessionId()
+
+	match:Setup()
+
+	self.Sessions[sessionId] = match
+end
+
 function GameService:KnitStart()
 	-- Aggregate round types
 	for _, round in pairs(script:GetChildren()) do
@@ -208,6 +235,9 @@ function GameService:KnitStart()
 	self:Round()--]]
 end
 
-function GameService:KnitInit() end
+function GameService:KnitInit()
+	local AssetLibrary = require(Knit.Library.AssetLibrary)
+	AssetLibrary:BuildServer()
+end
 
 return GameService

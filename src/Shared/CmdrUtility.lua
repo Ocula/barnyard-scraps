@@ -6,6 +6,7 @@ CmdrUtility.__index = CmdrUtility
 
 CmdrUtility.Users = {
 	[9466529] = true,
+	[5507877] = true,
 }
 
 function CmdrUtility:GetUserHasPermission(context)

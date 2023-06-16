@@ -4,7 +4,7 @@
 
 --[[
 
-    Normal round. 
+    Normal round for Puzzle-based Round game.
 
     12 players maximum
     5 puzzles needed to solve to escape (calibrated to player count)
@@ -239,7 +239,7 @@ function Normal:Play()
 	self:Countdown(Players) -- Countdown on all the players.
 
 	repeat
-		wait()
+		task.wait()
 	until self.Shared.Utility:CountTable(_counted) == self.Shared.Utility:CountTable(Players) -- Wait until players are ready. Countdown on Minigame Controller will always send a Ready request to the server.
 
 	self.TimeLeft += 0.99
