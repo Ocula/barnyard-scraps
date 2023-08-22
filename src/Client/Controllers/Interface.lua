@@ -39,7 +39,6 @@ local Interface = Knit.CreateController({
 })
 
 local clientBegan
-
 --[[ Structurally:
         Mount all roact trees here via their respective modules in Interface
 --]]
@@ -51,6 +50,8 @@ end
 function Interface:RemoveButton(buttonObj)
 	self.Buttons[buttonObj._object] = nil
 end
+
+function Interface:Build() end
 
 function Interface:Load()
 	-- Splash Screen / Loading Bar
@@ -135,7 +136,7 @@ end
 
 function Interface:KnitStart()
 	-- Test Fusion
-	--self:Load() -- Add to self:Load()
+	self:Load() -- Add to self:Load()
 	local Transitions = Handler:Get("Transitions") -- This inits the Transition folder.
 
 	-- Triangle test
@@ -246,4 +247,4 @@ function Interface:KnitInit()
 	clientBegan = GameController:getClientBegan() -- Time that the game starts.
 end
 
-return ui
+return Interface
