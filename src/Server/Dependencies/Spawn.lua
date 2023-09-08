@@ -51,13 +51,8 @@ end
 
 function Spawn:Destroy()
 	Knit.GetService("SpawnService").Spawns[self.Object] = nil
-	game:GetService("CollectionService"):RemoveTag(self.Object, "Spawn")
-
-	for i, v in pairs(self.Services.GameService.Players) do
-		if v._activeSpawn and v._activeSpawn.Object == self.Object then
-			v._activeSpawn = nil
-		end
-	end
+	
+	--game:GetService("CollectionService"):RemoveTag(self.Object, "Spawn")
 
 	if self.Object then
 		self.Object:Destroy()

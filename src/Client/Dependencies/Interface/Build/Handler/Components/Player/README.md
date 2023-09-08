@@ -1,1 +1,0 @@
-# Components folder for all things Player. Representing the Player on the Client since 2022™ @Ocula

@@ -7,12 +7,16 @@ local CmdrService = Knit.CreateService({
 })
 
 function CmdrService:KnitStart()
+
+end
+
+function CmdrService:KnitInit() 
 	local Cmdr = require(Knit.Library.Cmdr)
 
 	Cmdr:RegisterDefaultCommands()
 	Cmdr:RegisterHooksIn(script.Hooks)
-end
 
-function CmdrService:KnitInit() end
+	Cmdr:RegisterCommandsIn(Knit.Modules.Cmdr)
+end
 
 return CmdrService

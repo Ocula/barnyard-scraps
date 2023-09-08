@@ -18,7 +18,13 @@ AssetLibrary.Assets = {
 				ID = "rbxassetid://12181829304",
 				Size = Vector2.new(1024, 1024),
 			},
+
+			PolkaDot = {
+				ID = "rbxassetid://14080052911",
+				Size = Vector2.new(1024,1024)
+			}
 		},
+		
 		Buttons = {
 			PaintDrip1 = {
 				ID = "rbxassetid://12181502342",
@@ -33,6 +39,51 @@ AssetLibrary.Assets = {
 				Size = Vector2.new(1024, 1024),
 			},
 		},
+
+		Chicken = {
+			Backtail = {
+				ID  = "rbxassetid://14283855092",
+				Size = Vector2.new(282, 302),
+
+				Scale = Vector2.new(0.7255859375, 0.6865234375)
+			},
+
+			Headtail = {
+				ID = "rbxassetid://14283853323",
+				Size = Vector2.new(255, 241),
+
+				Scale = Vector2.new(0.37158203125, 0.16552734375), 
+			},
+
+			Arm = {
+				ID = "rbxassetid://14283853241",
+				Size = Vector2.new(262, 236),
+
+				Scale = Vector2.new(0.5458984375, 0.55078125),
+			},
+
+			Body = {
+				ID = "rbxassetid://14283877155",
+				Size = Vector2.new(524, 723), 
+
+				Scale = Vector2.new(0.4013671875, 0.58154296875), 
+			},
+
+			RLeg = {
+				ID = "rbxassetid://14283852930",
+				Size = Vector2.new(87, 87), 
+
+				Scale = Vector2.new(0.58837890625, 0.87646484375), 
+			},
+
+			LLeg = {
+				ID = "rbxassetid://14283853071", 
+				Size = Vector2.new(87, 87), 
+
+				Scale = Vector2.new(0.34619140625, 0.90966796875), 
+			},
+		},
+
 		Splash = { -- Legacy ID System for UI assets
 			Building = {
 				ID = "rbxassetid://11948927290",
@@ -69,6 +120,109 @@ AssetLibrary.Assets = {
 		},
 
 		Game = {
+			Icons = {
+				PlusSign = {
+					ID = "rbxassetid://13958562686",
+					Size = Vector2.new(1000,1000),
+				},
+
+				Checkmark = {
+					ID = "rbxassetid://14015899211",
+					Size = Vector2.new(1024,1024)
+				},
+
+				Play = {
+					ID = "rbxassetid://14023735276",
+					Size = Vector2.new(1024,1024)
+				},
+
+				Pencil = {
+					ID = "rbxassetid://14015855151",
+					Size = Vector2.new(1024,1024)
+				},
+
+				Trashcan = {
+					ID = "rbxassetid://14015878622",
+					Size = Vector2.new(512,512)
+				},
+
+				X = {
+					ID = "rbxassetid://14016261220",
+					Size = Vector2.new(1024,1024),
+				},
+
+				-- case sensitive icons for inventory ui
+				curves = {
+					ID = "rbxassetid://14079928734",
+					Size = Vector2.new(1024,1024), 
+				},
+
+				basic = {
+					ID = "rbxassetid://14079928372",
+					Size = Vector2.new(1024,1024), 
+				},
+
+				turns = {
+					ID = "rbxassetid://14079928500",
+					Size = Vector2.new(1024,1024), 
+				},
+
+				rise = {
+					ID = "rbxassetid://14079928217",
+					Size = Vector2.new(1024,1024), 
+				},
+				
+				Stop = {
+					ID = "rbxassetid://14198111978",
+					Size = Vector2.new(512, 512),
+				},
+
+				Pause = {
+					ID = "rbxassetid://14197857438",
+					Size = Vector2.new(512, 512), 
+				},
+
+				Reset = {
+					ID = "rbxassetid://14197857295",
+					Size = Vector2.new(512, 512),
+				},
+				
+				SetStart = {
+					ID = "rbxassetid://14220649167",
+					Size = Vector2.new(512, 512), 
+				},
+
+				Back = {
+					ID = "rbxassetid://14197857645",
+					Size = Vector2.new(512, 512)
+				},
+
+				PlaceTool = {
+					ID = "rbxassetid://14101725029",
+					Size = Vector2.new(512, 512)
+				},
+
+				RotateTool = {
+					ID = "rbxassetid://14101724804",
+					Size = Vector2.new(512, 512)
+				},
+
+				MoveTool = {
+					ID = "rbxassetid://14101725328",
+					Size = Vector2.new(512, 512)
+				},
+
+				PaintTool = {
+					ID = "rbxassetid://14102476151",
+					Size = Vector2.new(512, 512) 
+				},
+
+				DeleteTool = {
+					ID = "rbxassetid://14015878622",
+					Size = Vector2.new(512,512)
+				},
+			},
+
 			Splatters = {
 				Cartoon = { -- 12 to use
 					-- Cartoony splatters, use for more UI base interactions
@@ -243,11 +397,57 @@ AssetLibrary.Assets = {
 		},
 	},
 
+	Animations = {
+		Doors = {
+			Barnhouse1 = {
+				Open = "rbxassetid://14278758806",
+				Close = "rbxassetid://14271130280",
+			}
+		},
+
+		Transitions = {
+			ChickenAnimations = {
+				Run = "rbxassetid://14414470404",
+			},
+		},
+
+		Sandbox = {
+			Wheelbarrow = {
+				Up = "rbxassetid://14478507082",
+				Down = "rbxassetid://14478534426",
+				Collect = "rbxassetid://14478541864",
+			}
+		}
+	},
+
 	Audio = { -- Audio is organized by {[id], [timeToStart], [timeToEnd]}
 		UI = {},
 		Game = {
-			Theme = {},
+			Theme = {
+				
+			},
 			Effects = {
+				DominoClick = {
+					SoundId = "rbxassetid://156286438", 
+				},
+
+				Pop = {
+					SoundId = "rbxassetid://4607031412",
+					Start = 0.815,
+				},
+				
+				Delete = {
+					SoundId = "rbxassetid://14105375350", 
+				},
+
+				Place = {
+					SoundId = "rbxassetid://14105342383",
+				},
+
+				Paint = {
+					SoundId = "rbxassetid://9120584671", 
+				},
+
 				Shake1 = {
 					SoundId = "rbxassetid://12087471292",
 					Start = 3,
@@ -308,7 +508,7 @@ function AssetLibrary.getRandom(scope)
 	local currentScope = scope
 
 	if not currentScope then
-		currentScope = AssetLibrary.Assets
+		currentScope = AssetLibrary.Assetsx
 	end
 
 	local randomObject = Utility:GetRandomTableValue(scope)
@@ -321,7 +521,7 @@ function AssetLibrary.get(index, scope)
 
 	if not searchResult then
 		warn(
-			"Could not find the asset with the identification number that you are looking for. Double check your search query!",
+			"Could not find the asset with the identification string that you are looking for. Double check your search query!",
 			index
 		)
 		return
@@ -360,25 +560,28 @@ function AssetLibrary:BuildServer()
 	self.Assets.Game = bin
 end
 
-function AssetLibrary:Aggregate()
+function AssetLibrary:Aggregate(scope) 
 	if not RunService:IsClient() then
 		return
 	end
+
 	-- Get an array of all IDs
 
 	local _array = {}
 
 	local function getAssets(x)
+		if not x then return end 
+
 		for i, v in pairs(x) do
 			if type(v) == "string" and v:sub(1, 13):lower() == "rbxassetid://" then
 				table.insert(_array, v)
 			elseif type(v) == "table" then
-				getAssets(v)
+				getAssets(v) 
 			end
 		end
 	end
 
-	getAssets(self.Assets)
+	getAssets(scope) 
 
 	return _array
 end

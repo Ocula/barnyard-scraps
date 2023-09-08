@@ -199,6 +199,29 @@ function Utility:GetRandomTableValue(_table)
 	end
 end
 
+function Utility:Retrieve(index: array, namespace: string, separator: string?)
+	if not namespace then return end 
+
+	local arrayList = self:SplitString(namespace:upper(), separator or ":")
+
+	-- Check to make sure the index exists!
+	local object = index
+	
+	for _, v in ipairs(arrayList) do
+		--Go down a level if we can
+		object = object[v]
+		
+		--Exit if we ever hit a nil pointer
+		if (object == nil) then 
+			--warn("Item type " .. itemIndex .. " is invalid!")
+			return nil 
+		end
+	end
+
+	--Return the object we found
+	return object
+end
+
 function Utility:SplitString(_string, _split)
 	local _table, i = {}, 1
 	for _str in _string:gmatch("([^" .. _split .. "]+)") do
@@ -233,6 +256,14 @@ function Utility:GetTags(Object, Omit)
 	return _tags
 	--end
 end
+
+function Utility:GetFolderInAssets(folderName)
+	for i, v in game.ReplicatedStorage.Assets:GetDescendants() do 
+		if v:IsA("Folder") and v.Name:lower() == folderName:lower() then 
+			return v 
+		end 
+	end 
+end 
 
 function Utility:FindParent(_instance, _search)
 	local _parent = _instance
@@ -569,34 +600,94 @@ function Utility:IndexModules(folder, to)
 	end
 end
 
-function Utility:CompileValues(Object, Action)
-	if not Object then
-		return nil
+function Utility:FindObjects(folder)
+	local out = {
+		__ItemIndexType = "Folder";
+	}
+		
+	for _, v in pairs(folder:GetChildren()) do
+		if (v:IsA("Folder") and (not v:GetAttribute("isObject"))) then
+			out[v.Name:upper()]      = self:FindObjects(v)
+
+			local _attributes = v:GetAttributes() 
+
+			for index, value in pairs(_attributes) do 
+				out[v.Name:upper()][index] = value 
+			end 
+		else
+			out[v.Name:upper()]      = self:CompileValues(v) 
+			out[v.Name:upper()].Name = v.Name
+
+			local _attributes = v:GetAttributes() 
+
+			for index, value in pairs(_attributes) do 
+				out[v.Name:upper()][index] = value 
+			end 
+		end
 	end
 
-	-- Local recursive value check.
-	local findValues
-	findValues = function(values)
-		local out = {}
+	return out
+end 
 
-		if not values then
-			warn("Error compiling values for:", Object, Action)
-			return {}
+-- safely retrieves humroot
+function Utility:GetHumanoidRootPart(Player)
+	local Char = Player.Character 
+
+	if Char and Char:isDescendantOf(workspace) then 
+		local HRP = Char:FindFirstChild("HumanoidRootPart")
+
+		if HRP then 
+			return HRP 
+		end 
+	end 
+end 
+
+function Utility:ValueCheck(Object)
+	for k,v in pairs(Object:GetDescendants()) do
+		if (v.ClassName:sub(#v.ClassName - 4, #v.ClassName):lower() == "value") then 
+			return true 
 		end
+	end
 
-		for _, v in pairs(values:GetChildren()) do
-			-- If it finds a value, we index it.
+	return false 
+end 
 
-			if v.ClassName:sub(#v.ClassName - 4, #v.ClassName):lower() == "value" then
+function Utility:CompileValues(Object, Action)
+	-- Local recursive value check.
+	local _first = true 
+
+	local findValues
+
+	findValues = function(values, _start)
+		local out = _start or {} 
+
+		if (_first) then 
+			_first = false 
+
+			out = {
+				__ItemIndexType = "Object";
+				Object = Object; 
+			}
+		end 
+
+		for _, v in pairs(values:GetChildren()) do 
+			-- If it finds a value, we index it. 
+
+			--[[local _attributes = v:GetAttributes()
+			if (_attributes) then 
+				for i,v in pairs(_attributes) do
+					out[v.Name][i] = v 
+				end 
+			end --]]
+
+			if (v.ClassName:sub(#v.ClassName - 4, #v.ClassName):lower() == "value") then 
 				out[v.Name] = v.Value
-
-				if Action == "Delete" then
-					v:Destroy()
-				end
-			elseif v.ClassName == "Folder" then
+			elseif (v.ClassName == "Model" or v.ClassName == "Folder") then
 				-- Check to see if any sub-models hold important data.
-				if Utility:ValueCheck(v) then
-					out[v.Name] = findValues(v)
+				if self:ValueCheck(v) then
+					out[v.Name] = findValues(v, v:GetAttributes())
+				else 
+					out[v.Name] = v:GetAttributes() 
 				end
 			end
 		end
@@ -604,7 +695,19 @@ function Utility:CompileValues(Object, Action)
 		return out
 	end
 
-	return findValues(Object)
+	-- Find 
+	local _obj = findValues(Object) 
+
+	-- Attributes
+	local _attributes = Object:GetAttributes() 
+
+	if (_attributes) then 
+		for i,v in pairs(_attributes) do 
+			_obj[i] = v 
+		end 
+	end
+
+	return _obj
 end
 
 function Utility:Init()

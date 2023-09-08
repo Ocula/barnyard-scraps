@@ -61,11 +61,8 @@ function Map:GetCFrame()
 end
 
 function Map:GetOpenSpawn()
-	warn("Getting open spawn")
-
 	for i, v in pairs(self.Spawns) do
 		if not v:isBusy() then
-			warn("Found", v)
 			return v
 		end
 	end

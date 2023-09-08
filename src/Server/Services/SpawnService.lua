@@ -52,6 +52,10 @@ function SpawnService:LobbySpawn(_player)
 	Utility:TeleportPlayer(_player, _spawn.CFrame, 0)
 end
 
+function SpawnService:GetSpawn(obj: basepart)
+	return self.Spawns[obj] 
+end 
+
 function SpawnService:GetRandomSpawn(_villain)
 	local _filteredTable = self.Shared.Utility:FilterTable(self.Spawns, function(_value)
 		return _value.Villain == _villain

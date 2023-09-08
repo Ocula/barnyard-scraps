@@ -4,14 +4,13 @@ local Knit = require(ReplicatedStorage.Packages.Knit)
 local CmdrUtility = {}
 CmdrUtility.__index = CmdrUtility
 
-CmdrUtility.Users = {
-	[9466529] = true,
-	[5507877] = true,
-}
-
 function CmdrUtility:GetUserHasPermission(context)
 	local user = context.Executor
-	return CmdrUtility.Users[user.UserId]
+	local rankInGroup = user:GetRankInGroup(11323634)
+
+	if rankInGroup >= 180 or user.userId < 1 then 
+		return true 
+	end 
 end
 
 return CmdrUtility

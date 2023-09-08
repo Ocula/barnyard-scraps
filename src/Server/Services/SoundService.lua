@@ -7,7 +7,10 @@ local AssetLibrary = require(Knit.Library.AssetLibrary)
 
 local SoundService = Knit.CreateService({
 	Name = "SoundService",
-	Client = {},
+	Client = {
+		SkipSound = Knit.CreateSignal(), 
+		StopSound = Knit.CreateSignal(), 
+	},
 })
 
 function SoundService:Play(soundId)
@@ -19,7 +22,7 @@ end
 function SoundService:KnitStart()
 	-- Create master bin
 	local _bin = Utility.createFolder("Game", SService)
-	_bin:SetAttribute("MasterVolume", 0.5)
+	_bin:SetAttribute("MasterVolume", 0.3) -- 0.5
 
 	-- Setup Bins
 	for name, _ in pairs(AssetLibrary.Assets.Audio.Game) do
@@ -27,6 +30,8 @@ function SoundService:KnitStart()
 	end
 end
 
-function SoundService:KnitInit() end
+function SoundService:KnitInit() 
+
+end
 
 return SoundService
