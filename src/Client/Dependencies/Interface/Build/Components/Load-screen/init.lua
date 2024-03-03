@@ -12,8 +12,10 @@ Load.__index = Load
 local Fusion = require(Knit.Library.Fusion)
 --
 local Peek = Fusion.peek
-local Value, Observer, Computed, ForKeys, ForValues, ForPairs = Fusion.Value, Fusion.Observer, Fusion.Computed, Fusion.ForKeys, Fusion.ForValues, Fusion.ForPairs
-local New, Children, OnEvent, OnChange, Out, Ref, Cleanup = Fusion.New, Fusion.Children, Fusion.OnEvent, Fusion.OnChange, Fusion.Out, Fusion.Ref, Fusion.Cleanup
+local Value, Observer, Computed, ForKeys, ForValues, ForPairs =
+	Fusion.Value, Fusion.Observer, Fusion.Computed, Fusion.ForKeys, Fusion.ForValues, Fusion.ForPairs
+local New, Children, OnEvent, OnChange, Out, Ref, Cleanup =
+	Fusion.New, Fusion.Children, Fusion.OnEvent, Fusion.OnChange, Fusion.Out, Fusion.Ref, Fusion.Cleanup
 local Tween, Spring = Fusion.Tween, Fusion.Spring
 local Hydrate = Fusion.Hydrate
 
@@ -137,13 +139,15 @@ function Load.new()
 
 	-- Doors
 	self.props.Doors.Right.Position = Value(UDim2.new(0.5, 0, 0, 0))
-	self.props.Doors.Left.Position = Computed(function(Use) -- Whenever the Right door moves, the left will move with it.
-		local rightDoorPosition = Use(self.props.Doors.Right.Position).X.Scale
-		local distanceFromHalf = rightDoorPosition - 0.5
-		local leftPosition = 0.5 - distanceFromHalf
+	self.props.Doors.Left.Position = Computed(
+		function(Use) -- Whenever the Right door moves, the left will move with it.
+			local rightDoorPosition = Use(self.props.Doors.Right.Position).X.Scale
+			local distanceFromHalf = rightDoorPosition - 0.5
+			local leftPosition = 0.5 - distanceFromHalf
 
-		return UDim2.new(leftPosition, 0, 0, 0)
-	end)
+			return UDim2.new(leftPosition, 0, 0, 0)
+		end
+	)
 
 	-- Loading Bar
 	self.props.LoadingBar.ContainerSize = UDim2.new(1 + 256 / Peek(self.props.Resolution), 0, 0.4, 0)

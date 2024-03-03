@@ -21,7 +21,6 @@ local Tween = Fusion.Tween
 
 -- Get Barn & Pentagon Overlay
 local Barn = Handler:GetComponent("Load-screen/Barn")
-local PentagonOverlay = Handler:GetComponent("Load-screen/PentagonOverlay")
 
 local LocalPlayer = game.Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
@@ -39,6 +38,7 @@ local function LoadScreen(props)
 				Name = "Background",
 				Size = UDim2.new(1, 0, 1, 0),
 				AnchorPoint = Vector2.new(0.5, 0.5),
+				BackgroundColor3 = Color3.new(0.2, 0.2, 0.2),
 				Position = UDim2.new(0.5, 0, 0.5, 0),
 				BackgroundTransparency = Spring(
 					props.Transparency,
@@ -47,14 +47,6 @@ local function LoadScreen(props)
 				),
 
 				[Children] = {
-					UIGradient = New("UIGradient")({
-						Rotation = 90,
-						Color = ColorSequence.new({
-							ColorSequenceKeypoint.new(0, Color3.new(0.270588, 0.788235, 0.992156)),
-							ColorSequenceKeypoint.new(1, Color3.new(0, 0.615686, 1)),
-						}),
-					}),
-
 					Container = New("Frame")({
 						Size = UDim2.new(1, 0, 1, 0),
 						Position = UDim2.new(0, 0, 0, 0),
@@ -65,8 +57,6 @@ local function LoadScreen(props)
 							Barnhouse = Barn(props),
 						},
 					}),
-
-					BackgroundTexture = PentagonOverlay(props),
 				},
 			}),
 		},

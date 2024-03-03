@@ -13,43 +13,45 @@ local Handler = require(Knit.Modules.Interface.get)
 local Fusion = require(Knit.Library.Fusion)
 
 local Peek = Fusion.peek
-local Value, Observer, Computed, ForKeys, ForValues, ForPairs = Fusion.Value, Fusion.Observer, Fusion.Computed, Fusion.ForKeys, Fusion.ForValues, Fusion.ForPairs
-local New, Children, OnEvent, OnChange, Out, Ref, Cleanup = Fusion.New, Fusion.Children, Fusion.OnEvent, Fusion.OnChange, Fusion.Out, Fusion.Ref, Fusion.Cleanup
+local Value, Observer, Computed, ForKeys, ForValues, ForPairs =
+	Fusion.Value, Fusion.Observer, Fusion.Computed, Fusion.ForKeys, Fusion.ForValues, Fusion.ForPairs
+local New, Children, OnEvent, OnChange, Out, Ref, Cleanup =
+	Fusion.New, Fusion.Children, Fusion.OnEvent, Fusion.OnChange, Fusion.Out, Fusion.Ref, Fusion.Cleanup
 local Tween, Spring = Fusion.Tween, Fusion.Spring
 local Hydrate = Fusion.Hydrate
 
 local Signal = require(Knit.Library.Signal)
 
 local Interface = Knit.CreateController({
-	Resolution = Vector2.new(1980,1020), -- UI resolution. Everything has been set using 1980 x 1020. The UI system will scale accordingly.
+	Resolution = Vector2.new(1980, 1020), -- UI resolution. Everything has been set using 1980 x 1020. The UI system will scale accordingly.
 	Scale = 1, -- This can be changed at runtime.
 	Name = "Interface",
 	serverLoaded = false,
-	Loaded = false, 
+	Loaded = false,
 	Buttons = {},
 
 	Notifications = {
-		Upper = nil, -- only one upper notification at a time. 
-		Middle = {}, 
-		Lower = {}, 
+		Upper = nil, -- only one upper notification at a time.
+		Middle = {},
+		Lower = {},
 	},
 
 	Mouse = {
-		Hover = Value(""), 
+		Hover = Value(""),
 		Position = Value(Vector2.new()),
 	},
 
 	ViewportSize = Value(workspace.CurrentCamera.ViewportSize),
 
-	BuildComplete = Signal.new(), 
+	BuildComplete = Signal.new(),
 
-	Input = Value("Keyboard"), 
-	Tween = Value(0), 
+	Input = Value("Keyboard"),
+	Tween = Value(0),
 
-	CurrentZone = "", 
-	
-	RelativeCamera = CFrame.new(), 
-	CameraFinished = Signal.new(), 
+	CurrentZone = "",
+
+	RelativeCamera = CFrame.new(),
+	CameraFinished = Signal.new(),
 
 	goalWait = 1.5, -- We dont want the player waiting to load in any longer than 3 seconds.
 
@@ -59,84 +61,86 @@ local Interface = Knit.CreateController({
 	-- Any running UI can check here
 	-- This will mute any flashes. Will not affect gameplay.
 
-	_viewport = Signal.new(), 
-	_cameraTween = Signal.new(), 
-	_menusLoaded = Signal.new(), 
-	_interfaceLoaded = Signal.new(), 
+	_viewport = Signal.new(),
+	_cameraTween = Signal.new(),
+	_menusLoaded = Signal.new(),
+	_interfaceLoaded = Signal.new(),
 
-	ZoneChanged = Signal.new(), 
+	ZoneChanged = Signal.new(),
 
-	_menusAreLoaded = false, 
+	_menusAreLoaded = false,
 })
 
 local clientBegan
 
 function Interface:Build()
-	self.Bin = New "ScreenGui" {
+	self.Bin = New("ScreenGui")({
 		Name = "Bin",
-		Enabled = true, 
-		DisplayOrder = 10, 
-		IgnoreGuiInset = false, 
-		ResetOnSpawn = false, 
-		Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui") 
-	}
+		Enabled = true,
+		DisplayOrder = 10,
+		IgnoreGuiInset = false,
+		ResetOnSpawn = false,
+		Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui"),
+	})
 
 	task.spawn(function()
+		print("[SCRAPS] - Setup a new Game UI here!")
+
 		self.Game = Handler:GetClass("Game").new() -- create new game ui
-		self.BuildComplete:Fire() 
+		self.BuildComplete:Fire()
 	end)
 end
 
 function Interface:GetBin()
-	if not self.Bin then 
-		self.BuildComplete:Wait() 
+	if not self.Bin then
+		self.BuildComplete:Wait()
 	end
 
-	return self.Bin 
-end 
+	return self.Bin
+end
 
 function Interface:SetMouse()
-	local UserInputServ = game:GetService("UserInputService") 
+	local UserInputServ = game:GetService("UserInputService")
 	local PlayerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 	local MouseComponent = Handler:GetComponent("Frames/MouseHover")
-	local Obj = MouseComponent {
+	local Obj = MouseComponent({
 		Text = self.Mouse.Hover,
-		Position = self.Mouse.Position
-	}
+		Position = self.Mouse.Position,
+	})
 
-	Obj.Parent = self:GetBin() 
+	Obj.Parent = self:GetBin()
 
 	UserInputServ.InputChanged:Connect(function(input, gameprocessed)
 		if input.UserInputType == Enum.UserInputType.MouseMovement then
-			local Position = input.Position 
-			local Guis = PlayerGui:GetGuiObjectsAtPosition(Position.X, Position.Y) 
+			local Position = input.Position
+			local Guis = PlayerGui:GetGuiObjectsAtPosition(Position.X, Position.Y)
 
-			local Broke = false 
+			local Broke = false
 
-			for i, v in Guis do 
+			for i, v in Guis do
 				local Attribute = v:GetAttribute("MouseHover")
-				if Attribute then 
+				if Attribute then
 					self.Mouse.Hover:set(Attribute)
 
-					Broke = true 
+					Broke = true
 
 					break
-				end 
+				end
 			end
 
-			if not Broke then 
+			if not Broke then
 				self.Mouse.Hover:set("")
-			end 
+			end
 
-			self.Mouse.Position:set(Position) 
+			self.Mouse.Position:set(Position)
 		end
 	end)
-end 
+end
 
 function Interface:GetViewportRenderSignal()
-	return self._viewport 
-end 
+	return self._viewport
+end
 
 -- takes in a callback function that will run before the game ui finishes loading
 function Interface:Load(callback)
@@ -210,13 +214,13 @@ function Interface:Load(callback)
 	LoadObject:Shake(3)
 	LoadObject:SetDoor(0.6)
 
-	if self.Game then 
+	if self.Game then
 		self.Game:Render()
 	end
 
-	if callback then 
-		callback(self) 
-	end 
+	if callback then
+		callback(self)
+	end
 
 	task.wait(1)
 
@@ -228,125 +232,127 @@ function Interface:Load(callback)
 end
 
 function Interface:CameraSet()
-	local Lerp = self.Tween 
-	local CamSpring = Spring(Lerp, 5, .7) 
+	local Lerp = self.Tween
+	local CamSpring = Spring(Lerp, 5, 0.7)
 
-	self.CameraSpring = CamSpring 
-	
-	local SpringValue = Instance.new("NumberValue") 
-	SpringValue.Parent = workspace.CurrentCamera 
+	self.CameraSpring = CamSpring
+
+	local SpringValue = Instance.new("NumberValue")
+	SpringValue.Parent = workspace.CurrentCamera
 
 	local Component = Hydrate(SpringValue, {
-		Value = CamSpring, 
+		Value = CamSpring,
 	})
 
 	SpringValue.Changed:Connect(function()
-		self._cameraTween:Fire(SpringValue.Value) 
-	end) 
+		self._cameraTween:Fire(SpringValue.Value)
+	end)
 end
 
 function Interface:SetTransitions()
-	local chicken = Handler:GetClass("Game/Transition").new("Chicken") 
+	--[[local chicken = Handler:GetClass("Game/Transition").new("Chicken") 
 
 	self.Transitions = {
 		Chicken = chicken, 
-	} 
-end 
+	}--]]
+end
 
 function Interface:TweenCamera(From, To)
-	if self.CamTween then 
-		self.CamTween:Disconnect() 
-		self.CamTween = nil 
-	end 
+	if self.CamTween then
+		self.CamTween:Disconnect()
+		self.CamTween = nil
+	end
 
 	-- reset
 	self.Tween:set(0)
-	self.CameraSpring:setPosition(0) 
+	self.CameraSpring:setPosition(0)
 
-	local Camera = workspace.CurrentCamera 
+	local Camera = workspace.CurrentCamera
 
-	self.CamTween = game:GetService("RunService").RenderStepped:Connect(function(dt) 
-		Camera.CFrame = From:Lerp(To, Peek(self.CameraSpring)) 
+	self.CamTween = game:GetService("RunService").RenderStepped:Connect(function(dt)
+		Camera.CFrame = From:Lerp(To, Peek(self.CameraSpring))
 
-		if Peek(self.CameraSpring) >= 0.999 then 
-			self.CameraFinished:Fire() 
-			self.CamTween:Disconnect() 
-		end 
+		if Peek(self.CameraSpring) >= 0.999 then
+			self.CameraFinished:Fire()
+			self.CamTween:Disconnect()
+		end
 	end)
 
 	self.Tween:set(1)
-end 
+end
 
 function Interface:SetZoneChanged()
 	local LoadedZone = nil -- refers to locked/loaded lol. not the actual loaded zone.
 
 	self.ZoneChanged:Connect(function(Zone)
-		LoadedZone = Zone 
+		LoadedZone = Zone
 
 		warn("Loaded Zone:", LoadedZone)
 
-		if self.CurrentZone ~= Zone and LoadedZone ~= self.CurrentZone then 
-			task.delay(.5, function()
-				if Zone == LoadedZone and self.CurrentZone ~= Zone then 
-					self.CurrentZone = Zone 
+		if self.CurrentZone ~= Zone and LoadedZone ~= self.CurrentZone then
+			task.delay(0.5, function()
+				if Zone == LoadedZone and self.CurrentZone ~= Zone then
+					self.CurrentZone = Zone
 
-					if not self.Loaded then 
+					if not self.Loaded then
 						warn("Waiting for load-in:", Zone)
-						self._interfaceLoaded:Wait() 
-					end 
-			
+						self._interfaceLoaded:Wait()
+					end
+
 					warn("Updating new zone now:", Zone)
 					-- upper notification
 					local Notification = Handler:GetClass("Game/Notifications/Zone").new({
-						Name = Zone, 
+						Name = Zone,
 					})
-			
-					if self.Notifications.Upper then 
-						self.Notifications.Upper:Destroy() 
-					end 
-			
+
+					if self.Notifications.Upper then
+						self.Notifications.Upper:Destroy()
+					end
+
 					self.Notifications.Upper = Notification
-			
-					if self.Notifications.Upper == Notification then 
-						Notification:Show() 
-					end 
-				end 
-			end) 
-		end 
+
+					if self.Notifications.Upper == Notification then
+						Notification:Show()
+					end
+				end
+			end)
+		end
 	end)
-end 
+end
 
 function Interface:KnitStart()
 	-- Remove health bar stuff
 	pcall(function()
-		game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Health, false) 
-	end) 
-	
-	-- Prep Proximities 
+		game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Health, false)
+	end)
+
+	-- Prep Proximities
 	local ProximityController = Knit.GetController("ProximityController")
-	--local SaveObject = 
+	--local SaveObject =
 	--ProximityController:RegisterHook()
 
 	local camera = workspace.CurrentCamera
 
 	camera:GetPropertyChangedSignal("ViewportSize"):Connect(function()
 		local newSize = camera.ViewportSize
-		self.ViewportSize:set(newSize) 
-	end) 
+		self.ViewportSize:set(newSize)
+	end)
 
 	self:Build()
 	self:Load(function()
-		self.Loaded = true 
-		self._interfaceLoaded:Fire() 
-	end) 
+		self.Loaded = true
+		self._interfaceLoaded:Fire()
+	end)
 
-	self.Game.HUD:Toggle(true) 
+	--[[
+	print("[SCRAPS] - Toggling HUD on")
+	self.Game.HUD:Toggle(true)--]]
 
-	-- check for inits 
-	for i, v in self.Game.Menus do 
-		if v.Init then 
-			v:Init() 
-		end 
+	-- check for inits
+	for i, v in self.Game.Menus do
+		if v.Init then
+			v:Init()
+		end
 	end
 
 	self:SetMouse()
@@ -360,21 +366,21 @@ function Interface:KnitInit()
 	local userInput = Knit.GetController("UserInput")
 
 	userInput.PreferredChanged:Connect(function()
-		local pref = userInput:GetPreferred() -- gets the string version 
-		self.Input:set(pref) 
+		local pref = userInput:GetPreferred() -- gets the string version
+		self.Input:set(pref)
 	end)
 
 	-- local events
 	self._menusLoaded:Connect(function()
-		self._menusAreLoaded = true 
+		self._menusAreLoaded = true
 	end)
 
 	local GameController = Knit.GetController("GameController")
-	local PlayerController = Knit.GetController("PlayerController") 
+	local PlayerController = Knit.GetController("PlayerController")
 
-	local TunnelService = Knit.GetService("TunnelService") 
-	local PlayerService = Knit.GetService("PlayerService") 
-	local ZoneService = Knit.GetService("ZoneService") 
+	local TunnelService = Knit.GetService("TunnelService")
+	local PlayerService = Knit.GetService("PlayerService")
+	local ZoneService = Knit.GetService("ZoneService")
 
 	--[[
 	RunService:BindToRenderStep("ButtonRender", Enum.RenderPriority.Last.Value, function()
@@ -383,111 +389,120 @@ function Interface:KnitInit()
 		end
 	end)--]]
 
-	self:SetTransitions() 
-	self:CameraSet() 
-	self:SetZoneChanged() 
+	self:SetTransitions()
+	self:CameraSet()
+	self:SetZoneChanged()
 
 	GameController.Loaded:Connect(function(bool)
 		self.serverLoaded = bool
 	end)
 
 	PlayerService.Update:Connect(function(dataType, data)
-		if not self.Game then 
-			repeat 
-				task.wait(.1)
-			until self.Game 
-		end 
+		if not self.Game then
+			repeat
+				task.wait(0.1)
+			until self.Game
+		end
 
-		if dataType == "Data" then 
-			for i, v in data do 
+		if dataType == "Data" then
+			for i, v in data do
 				local object = self.Game.HUD.Data[i]
 				object:set(v)
 			end
-		elseif dataType == "Inventory" then 
-			self.Game.Menus.Inventory:Process(data) 	
+		elseif dataType == "Inventory" then
+			self.Game.Menus.Inventory:Process(data)
 		end
 	end)
 
 	ZoneService.Update:Connect(function(zone)
-		self.ZoneChanged:Fire(zone) 
+		self.ZoneChanged:Fire(zone)
 	end)
 
 	TunnelService.Transition:Connect(function(inOut, data)
 		local StarterGui = game:GetService("StarterGui")
 
-		local chicken = self.Transitions.Chicken  
+		local chicken = self.Transitions.Chicken
 		local CameraModule = PlayerController:GetCamera()
 
-		if inOut then 
+		if inOut then
 			--[[if data.ToggleInventory then
 				self.Game.Menus.Inventory:Toggle(false)
 			end--]]
-			repeat task.wait() until pcall(StarterGui.SetCore, StarterGui, "ResetButtonCallback", false)
-			-- 
-			self.Game.HUD:Toggle(false) 
+			repeat
+				task.wait()
+			until pcall(StarterGui.SetCore, StarterGui, "ResetButtonCallback", false)
+			--
+			self.Game.HUD:Toggle(false)
 
-			--CameraModule:SetFirstPerson(false) 
+			--CameraModule:SetFirstPerson(false)
 
-			local Camera = workspace.CurrentCamera 
-			Camera.CameraType = "Scriptable" 
+			local Camera = workspace.CurrentCamera
+			Camera.CameraType = "Scriptable"
 
-			local From = Camera.CFrame -- store this relative player's head 
-			local Head = Utility:GetHumanoidRootPart(game.Players.LocalPlayer).Parent:FindFirstChild("Head") 
+			local From = Camera.CFrame -- store this relative player's head
+			local Head = Utility:GetHumanoidRootPart(game.Players.LocalPlayer).Parent:FindFirstChild("Head")
 
-			if Head then 
-				self.RelativeCamera = From:ToObjectSpace(Head.CFrame) 
-			end 
-			
-			local To = CFrame.new((data.Front.CFrame * CFrame.new(0, 5, - 15 - (data.Front.Size.Magnitude/2))).Position, data.Front.Position) 
+			if Head then
+				self.RelativeCamera = From:ToObjectSpace(Head.CFrame)
+			end
 
-			self:TweenCamera(From, To) 
+			local To = CFrame.new(
+				(data.Front.CFrame * CFrame.new(0, 5, -15 - (data.Front.Size.Magnitude / 2))).Position,
+				data.Front.Position
+			)
+
+			self:TweenCamera(From, To)
 
 			self.CameraFinished:Wait()
-			-- 
-			chicken:In() 
-		else 
-			--UserInputService.MouseBehavior = Enum.MouseBehavior.Default 
+			--
+			chicken:In()
+		else
+			--UserInputService.MouseBehavior = Enum.MouseBehavior.Default
 
-			local From = CFrame.new((data.Front.CFrame * CFrame.new(0, 5, - 15 - (data.Front.Size.Magnitude/2))).Position, data.Front.Position) 
-			local Camera = workspace.CurrentCamera 
+			local From = CFrame.new(
+				(data.Front.CFrame * CFrame.new(0, 5, -15 - (data.Front.Size.Magnitude / 2))).Position,
+				data.Front.Position
+			)
+			local Camera = workspace.CurrentCamera
 
-			Camera.CFrame = From 
+			Camera.CFrame = From
 
 			chicken:Out()
 
-			local To = From * CFrame.new(0,0,data.Front.Size.Magnitude/6) 
+			local To = From * CFrame.new(0, 0, data.Front.Size.Magnitude / 6)
 
-			self:TweenCamera(From, To) 
+			self:TweenCamera(From, To)
 
-			self.CameraFinished:Wait() 
+			self.CameraFinished:Wait()
 
-			self.Game.HUD:Toggle(true) 
+			self.Game.HUD:Toggle(true)
 
 			local HumRoot = Utility:GetHumanoidRootPart(game.Players.LocalPlayer)
-			
-			if HumRoot then 
-				local Head = HumRoot.Parent:FindFirstChild("Head") 
 
-				if Head then 
+			if HumRoot then
+				local Head = HumRoot.Parent:FindFirstChild("Head")
+
+				if Head then
 					local lookVector = Head.CFrame.LookVector
-					local yRotation = math.atan2(lookVector.Z, lookVector.X) 
+					local yRotation = math.atan2(lookVector.Z, lookVector.X)
 
-					--print(zDot * (math.pi/2)) 
+					--print(zDot * (math.pi/2))
 
-					CameraModule:Reset(Vector2.new(yRotation, math.rad(90))) 
-				end 
-			end 
+					CameraModule:Reset(Vector2.new(yRotation, math.rad(90)))
+				end
+			end
 
 			-- we can technically do a camera that "follows" the player until they're out of range and then it snaps to them.
-			-- > this is sick kainoa but you don't need it right now. control urself. 
-			-- > but it'd be SO COOL. 
+			-- > this is sick kainoa but you don't need it right now. control urself.
+			-- > but it'd be SO COOL.
 
 			Camera.CameraType = "Custom"
 
-			repeat task.wait() until pcall(StarterGui.SetCore, StarterGui, "ResetButtonCallback", true) 
+			repeat
+				task.wait()
+			until pcall(StarterGui.SetCore, StarterGui, "ResetButtonCallback", true)
 
-			--CameraModule:SetFirstPerson(true) 
-
+			--CameraModule:SetFirstPerson(true)
 
 			--[[if data.ToggleInventory then
 				self.Game.Menus.Inventory:Toggle(true)

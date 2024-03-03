@@ -1,4 +1,4 @@
--- Item Index Service 
+-- Item Index Service
 -- ocula
 -- September 1, 2020
 
@@ -60,19 +60,19 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Knit = require(ReplicatedStorage.Packages.Knit)
 
-local Utility = require(Knit.Library.Utility) 
+local Utility = require(Knit.Library.Utility)
 
 local Signal = require(Knit.Library.Signal)
 
 local ItemIndexService = Knit.CreateService({
-	Name = "ItemIndexService", 
-	Client = {};
-	Index  = {}; -- The entire game content index. 
-	Sounds = {}; -- 
+	Name = "ItemIndexService",
+	Client = {},
+	Index = {}, -- The entire game content index.
+	Sounds = {}, --
 
-	Loaded = false;
-	_loadedEvent = Signal.new(), 
-}) 
+	Loaded = false,
+	_loadedEvent = Signal.new(),
+})
 
 -- Utility Functions
 function splitString(inputStr, delimiter)
@@ -82,66 +82,65 @@ function splitString(inputStr, delimiter)
 	end
 
 	return out
-end	
-	
+end
+
 -- Utility Methods
 function ItemIndexService:FolderCheck(CheckMe)
-	for i,v in pairs(CheckMe:GetChildren()) do
-		if v:IsA("Folder") then 
-			return true 
+	for i, v in pairs(CheckMe:GetChildren()) do
+		if v:IsA("Folder") then
+			return true
 		end
 	end
-	
+
 	return false
 end
 
 function ItemIndexService:ValueCheck(Object)
-	for k,v in pairs(Object:GetDescendants()) do
-		if (v.ClassName:sub(#v.ClassName - 4, #v.ClassName):lower() == "value") then 
-			return true 
+	for k, v in pairs(Object:GetDescendants()) do
+		if v.ClassName:sub(#v.ClassName - 4, #v.ClassName):lower() == "value" then
+			return true
 		end
 	end
 
-	return false 
+	return false
 end
 
 function ItemIndexService:CompileValues(Object)
-	return Utility:CompileValues(Object) 
+	return Utility:CompileValues(Object)
 end
-
 
 -- Method for collecting Index information
 -- Parameters: None
 function ItemIndexService:Load()
-	local Assets 	= game:GetService("ReplicatedStorage"):WaitForChild("Assets")
-	local Items   	= Assets:WaitForChild("Items")
-	local Sounds	= Assets:WaitForChild("Sounds")
-	local Build		= Assets:WaitForChild("Build") 
-	local Homes 	= Assets:WaitForChild("Homes") 
-	local Vendors 	= Assets:WaitForChild("Vendors") 
+	local Assets = game:GetService("ReplicatedStorage"):WaitForChild("Assets")
+	local Items = Assets:WaitForChild("Items")
+	local Sounds = Assets:WaitForChild("Sounds")
+	local Build = Assets:WaitForChild("Build")
+	local Homes = Assets:WaitForChild("Homes")
+	local Vendors = Assets:WaitForChild("Vendors")
 
-	local Game		= game:GetService("ServerStorage"):WaitForChild("Game")
+	local Game = game:GetService("ServerStorage"):WaitForChild("Game")
 
 	--Find all objects
 	-- Server
-	self.Game  = Utility:FindObjects(Game)  
+	self.Game = Utility:FindObjects(Game)
 
 	-- Shared
 	self.Index = Utility:FindObjects(Items)
 	self.Sounds = Utility:FindObjects(Sounds)
-	self.Build = Utility:FindObjects(Build) 
-	self.Homes = Utility:FindObjects(Homes) 
-	self.Vendors = Utility:FindObjects(Vendors) 
+	self.Build = Utility:FindObjects(Build)
+	self.Homes = Utility:FindObjects(Homes)
+	self.Vendors = Utility:FindObjects(Vendors)
 
-	warn("ItemIndexService:", self) 
+	warn("ItemIndexService:", self)
 	----
-end 
+end
 
 -- Function for retrieving namespaced *things*
 function retrieveNamespacedInternal(index, itemIndex)
-	if (itemIndex == nil or type(itemIndex) == "number") then 
+	if itemIndex == nil or type(itemIndex) == "number" then
 		warn("NamespacedInternal: ", index, itemIndex)
-		error("ItemIndex parameter is nil or a number, please provide a string id.") 
+		error("ItemIndex parameter is nil or a number, please provide a string id.")
 	end
 
 	local arrayList = splitString(itemIndex:upper(), ":")
@@ -151,11 +150,11 @@ function retrieveNamespacedInternal(index, itemIndex)
 	for _, v in ipairs(arrayList) do
 		--Go down a level if we can
 		object = object[v]
-		
+
 		--Exit if we ever hit a nil pointer
-		if (object == nil) then 
+		if object == nil then
 			--warn("Item type " .. itemIndex .. " is invalid!")
-			return nil 
+			return nil
 		end
 	end
 
@@ -163,41 +162,40 @@ function retrieveNamespacedInternal(index, itemIndex)
 	return object
 end
 
-
 function ItemIndexService:Search(query)
 	local splitQuery = splitString(query:upper(), ":")
-	local queryIndex = nil 
-	
+	local queryIndex = nil
+
 	for i, v in pairs(self) do
 		if type(v) == "table" then
 			local Search = splitQuery[1]
 
-			if v[Search] then 
-				queryIndex = v 
-			end 
-		end 
-	end 
+			if v[Search] then
+				queryIndex = v
+			end
+		end
+	end
 
 	local object = retrieveNamespacedInternal(queryIndex, query)
 
 	--Make sure we have an object
-	if (object) and (object.__ItemIndexType ~= "Object") then
+	if object and (object.__ItemIndexType ~= "Object") then
 		warn("Item type " .. query .. " is not an object!")
 		return nil
 	end
 
 	return object
-end 
+end
 
 -- Method for retrieving namespaced folder from an ItemIndex
 function ItemIndexService:GetCategory(itemIndex)
-	--warn("Attempting to get Category:", itemIndex) 
+	--warn("Attempting to get Category:", itemIndex)
 
 	local folder = splitString(itemIndex:upper(), ":")[1]
 	local object = retrieveNamespacedInternal(self.Index, folder)
 
 	--Make sure we have an object
-	if (object) and (object.__ItemIndexType ~= "Folder") then
+	if object and (object.__ItemIndexType ~= "Folder") then
 		--warn("Item type " .. itemIndex .. " is not a category!")
 		return nil
 	end
@@ -210,7 +208,7 @@ function ItemIndexService:GetItem(itemIndex)
 	local object = retrieveNamespacedInternal(self.Index, itemIndex)
 
 	--Make sure we have an object
-	if (object) and (object.__ItemIndexType ~= "Object") then
+	if object and (object.__ItemIndexType ~= "Object") then
 		warn("Item type " .. itemIndex .. " is not an object!")
 		return nil
 	end
@@ -222,88 +220,89 @@ function ItemIndexService:GetSound(itemIndex)
 	local object = retrieveNamespacedInternal(self.Sounds, itemIndex)
 
 	--Make sure we have an object
-	if (object) and (object.__ItemIndexType ~= "Object") then
+	if object and (object.__ItemIndexType ~= "Object") then
 		warn("Item type " .. itemIndex .. " is not an object!")
 		return nil
 	end
 
 	return object
-end 
+end
 
 function ItemIndexService:GetVendor(itemIndex)
 	local object = retrieveNamespacedInternal(self.Vendors, itemIndex)
 
 	--Make sure we have an object
-	if (object) and (object.__ItemIndexType ~= "Object") then
+	if object and (object.__ItemIndexType ~= "Object") then
 		warn("Item type " .. itemIndex .. " is not an object!")
 		return nil
 	end
 
 	return object
-end 
+end
 
 -- Method for retrieving Map assets
-function ItemIndexService:Get(itemIndex) 
-	local object = retrieveNamespacedInternal(self.Game, itemIndex) 
+function ItemIndexService:Get(itemIndex)
+	local object = retrieveNamespacedInternal(self.Game, itemIndex)
 
-	if (object and object.__ItemIndexType ~= "Object") then 
-		return nil 
-	end 
+	if object and object.__ItemIndexType ~= "Object" then
+		return nil
+	end
 
-	return object 
-end 
+	return object
+end
 
 function ItemIndexService:GetBuild(itemIndex)
-	local object = retrieveNamespacedInternal(self.Build, itemIndex) 
+	local object = retrieveNamespacedInternal(self.Build, itemIndex)
 
-	if (object and object.__ItemIndexType ~= "Object") then 
-		return nil 
-	end 
+	if object and object.__ItemIndexType ~= "Object" then
+		return nil
+	end
 
-	return object 
-end 
+	return object
+end
 
 function ItemIndexService:GetHomes(itemIndex)
-	local object = retrieveNamespacedInternal(self.Homes, itemIndex) 
+	local object = retrieveNamespacedInternal(self.Homes, itemIndex)
 
-	if (object and object.__ItemIndexType ~= "Object") then 
-		return nil 
-	end 
+	if object and object.__ItemIndexType ~= "Object" then
+		return nil
+	end
 
-	return object 
-end 
-
+	return object
+end
 
 -- Method for retrieving assets via their names.
 function ItemIndexService:GetItemFromName(item, path) -- Can narrow down where to begin its recursive search.
 	local Result
 
-	local _searchPath = (path or ""):upper() 
+	local _searchPath = (path or ""):upper()
 
 	local function _recursiveSearch(table)
-		if (not table) then return end 
+		if not table then
+			return
+		end
 
 		for k, v in pairs(table) do
 			if k:upper() == item:upper() then
-				_searchPath ..= ":"..k 
+				_searchPath ..= ":" .. k
 				Result = v
-				return 
+				return
 			else
-				if (type(v) == "table") and (not Result) then 
+				if (type(v) == "table") and not Result then
 					_recursiveSearch(v)
 				end
 			end
 		end
 	end
-	
+
 	-- Search in the index table.
-	local Scope  = self.Index
+	local Scope = self.Index
 	if path then
-		Scope = self.Index[path:upper()] 
-	end 
+		Scope = self.Index[path:upper()]
+	end
 
 	_recursiveSearch(Scope)
-	return Result 
+	return Result
 end
 
 -- Legacy compatibility function.
@@ -316,25 +315,25 @@ function ItemIndexService.Client:GetCategory(Player, ItemIndex)
 end
 
 function ItemIndexService.Client:GetBuild(Player, ItemIndex)
-	return self.Server:GetBuild(ItemIndex) 
+	return self.Server:GetBuild(ItemIndex)
 end
 
 function ItemIndexService.Client:GetSound(Player, ItemIndex)
 	return self.Server:GetSound(ItemIndex)
-end 
+end
 
 function ItemIndexService.Client:GetItem(Player, ItemIndex)
-	warn("Getting Item:", ItemIndex, self.Index) 
+	warn("Getting Item:", ItemIndex, self.Index)
 	return self.Server:GetItem(ItemIndex)
 end
 
 function ItemIndexService.Client:GetTable(Player, Index)
-	return self.Server.Index[Index:upper()] 
-end 
+	return self.Server.Index[Index:upper()]
+end
 
 function ItemIndexService:KnitStart()
 	--whrr putt putt pop pop popop pop po-VROOOOOMMMMM
-	--vROOMmm vROOMmmm 
+	--vROOMmm vROOMmmm
 	--LOL
 end
 
@@ -342,11 +341,10 @@ end
 function ItemIndexService:KnitInit()
 	self:Load()
 	self.Loaded = true
-	self._loadedEvent:Fire(self) 
+	self._loadedEvent:Fire(self)
 
 	--print("ItemIndex:", self.Index)
-	--print("Game:", self.Game) 
-end 
-	
+	--print("Game:", self.Game)
+end
 
 return ItemIndexService

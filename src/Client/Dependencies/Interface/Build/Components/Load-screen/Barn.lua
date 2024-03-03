@@ -39,11 +39,11 @@ local function Barn(props)
 				Rotation = Spring(props.Building.Rotation, 25, 0.7), -- TODO: Finetune Spring
 				ZIndex = 2,
 				BackgroundTransparency = 1,
-				ImageTransparency = Spring(
+				ImageTransparency = 1,--[[Spring(
 					props.Transparency,
 					props.Springs.Transparency.Speed,
 					props.Springs.Transparency.DampingRatio
-				),
+				),--]]
 
 				[Children] = {
 					Doors = New("Frame")({
@@ -58,6 +58,7 @@ local function Barn(props)
 								Image = InterfaceUtils.getImageId("RightDoor"),
 								Size = UDim2.new(188 / 771, 0, 318 / 318, 0),
 								AnchorPoint = Vector2.new(0, 0),
+								Visible = false,
 								BackgroundTransparency = 1,
 								Position = Spring(
 									props.Doors.Right.Position,
@@ -79,6 +80,7 @@ local function Barn(props)
 								Image = InterfaceUtils.getImageId("LeftDoor"),
 								Size = UDim2.new(188 / 771, 0, 318 / 318, 0),
 								AnchorPoint = Vector2.new(1, 0),
+								Visible = false,
 								BackgroundTransparency = 1,
 								Position = Spring(
 									props.Doors.Left.Position,
@@ -102,8 +104,8 @@ local function Barn(props)
 						Name = "LoadingBar",
 						Size = props.LoadingBar.ContainerSize,
 						Position = props.LoadingBar.Position,
-						AnchorPoint = Vector2.new(0.5, 0),
-						BackgroundColor3 = Color3.new(1, 1, 1),
+						AnchorPoint = Vector2.new(0.5, 0.5),
+						BackgroundColor3 = Color3.new(0.3, 0.3, 0.3),
 						ZIndex = 1,
 						BackgroundTransparency = Spring(
 							props.Transparency,
@@ -145,6 +147,7 @@ local function Barn(props)
 			Roof = New("ImageLabel")({
 				Name = "Roof",
 				BackgroundTransparency = 1,
+				Visible = false,
 				AnchorPoint = Vector2.new(0.5, 0.5),
 				Image = InterfaceUtils.getImageId("Roof"),
 				Size = props.Roof.Size,
@@ -178,6 +181,7 @@ local function Barn(props)
 				Name = "Silo",
 				Image = InterfaceUtils.getImageId("Silo"),
 				Size = props.Silo.Size,
+				Visible = false,
 				AnchorPoint = Vector2.new(0.5, 0.5),
 				BackgroundTransparency = 1,
 				Position = props.Silo.Position,
@@ -194,6 +198,7 @@ local function Barn(props)
 				AnchorPoint = Vector2.new(0.5, 0.5),
 				Image = InterfaceUtils.getImageId("Grass"),
 				Size = props.Grass.Size,
+				Visible = false,
 				BackgroundTransparency = 1,
 				Position = props.Grass.Position,
 				ZIndex = 5,

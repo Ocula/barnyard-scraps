@@ -2,13 +2,14 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Knit = require(ReplicatedStorage.Packages.Knit)
 
-local GameAnalytics = require(Knit.Library.GameAnalytics) 
+--local GameAnalytics = require(Knit.Library.GameAnalytics)
 
-local AnalyticsService = Knit.CreateService {
-    Name = "AnalyticsService",
-    Client = {},
-}
+local AnalyticsService = Knit.CreateService({
+	Name = "AnalyticsService",
+	Client = {},
+})
 
+--[[
 local Build = "0.1.0"
 local GameKey = "0f81b49bc5e1137863dde32232636895"
 local SecretKey = "9579a41c35f921b2ee7fec64a12927d99ad03742"
@@ -46,22 +47,18 @@ function AnalyticsService:Register(userId: number, event: string, data: table)
             value = data.Rank 
         })
     end 
-end 
+end --]]
 
-function AnalyticsService:KnitStart()
-    
-end
-
+function AnalyticsService:KnitStart() end
 
 function AnalyticsService:KnitInit()
-    GameAnalytics:configureBuild(Build) 
+	--[[GameAnalytics:configureBuild(Build) 
     GameAnalytics:initialize({
         gameKey = GameKey, 
         secretKey = SecretKey,
 
         automaticSendBusinessEvents = true, 
-    }) 
-end
-
+    })--]]
+end --]]
 
 return AnalyticsService
